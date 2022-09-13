@@ -1,0 +1,1 @@
+RegExp ulrRegx = new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
