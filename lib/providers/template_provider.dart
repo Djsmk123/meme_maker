@@ -22,8 +22,10 @@ class TemplateProvider extends ChangeNotifier{
     notifyListeners();
   }
     setTemplateData()async{
-     TemplateData tmpData=await FetchTemplate.getTemplateFromImgFlip();
-     templateData=tmpData.data!.memes!;
+     List<Memes> tmpData=await FetchTemplate.getTemplates();
+     templateData=tmpData;
+
+
      applyFilter();
   }
    applyFilter({String? query})async{

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_font_picker/flutter_font_picker.dart';
-import 'package:meme_maker/providers/text_provider.dart';
-import 'package:provider/provider.dart';
 
 import '../models/fontclass.dart';
 

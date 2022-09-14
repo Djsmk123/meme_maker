@@ -1,3 +1,7 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class TemplateData {
   bool? success;
   Data? data;
@@ -49,27 +53,36 @@ class Memes {
   String? url;
   int? width;
   int? height;
-  int? boxCount;
+  int? likeCount;
+  dynamic timeStamp;
+  String? uid;
+  List<dynamic>? likes;
 
-  Memes({this.id, this.name, this.url, this.width, this.height, this.boxCount});
+  Memes({this.name, this.url, this.width, this.height,this.likes,this.id});
 
   Memes.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
     name = json['name'];
+    likes=json.containsKey('likes')?json['likes']:[];
     url = json['url'];
     width = json['width'];
+    id=json['id'];
     height = json['height'];
-    boxCount = json['box_count'];
+    likeCount=json.containsKey('likeCount')?json['likeCount']:0;
+    timeStamp=json.containsKey('timeStamp')?json['timeStamp']:Timestamp.now;
+    uid=json.containsKey('uid')?json['uid']:"m74rafnFXddXD5iJt4VEJqEGPR03";
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
     data['name'] = name;
     data['url'] = url;
     data['width'] = width;
     data['height'] = height;
-    data['box_count'] = boxCount;
+    data['likeCount']=likeCount??0;
+    data['timeStamp']=timeStamp;
+    data['uid']=uid;
+    data['likes']=likes;
+    data['id']=id;
     return data;
   }
 }

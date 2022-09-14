@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:meme_maker/constant.dart';
 import 'package:meme_maker/providers/text_provider.dart';
 import 'package:provider/provider.dart';
 class MemeEditorScreen extends StatefulWidget {
@@ -108,7 +109,7 @@ class _MemeEditorScreenState extends State<MemeEditorScreen> {
   }
   AppBar appBar(){
   return AppBar(
-      backgroundColor: const Color(0XFFE64848),
+      backgroundColor: kPrimaryColor,
       title: const Text("Meme Generator",style: TextStyle(
           color: Colors.white,
           fontSize: 30
@@ -120,7 +121,7 @@ class _MemeEditorScreenState extends State<MemeEditorScreen> {
     return BottomNavigationBar(
       iconSize: 30,
       currentIndex: 0,
-      backgroundColor: const Color(0XFFE64848),
+      backgroundColor: kPrimaryColor,
       selectedItemColor:Colors.white,
       selectedLabelStyle:const TextStyle(
           color: Colors.white

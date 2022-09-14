@@ -1,5 +1,9 @@
+import 'dart:convert';
 import 'dart:developer';
+import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
@@ -45,6 +49,7 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
     List<Memes>? memes=Provider.of<TemplateProvider>(context).getTemplateData;
     bool isSearched=Provider.of<TemplateProvider>(context).getSearchStatus;
     final ImagePicker picker = ImagePicker();
+    User? user=FirebaseAuth.instance.currentUser;
     return Scaffold(
       backgroundColor: Colors.white,
       floatingActionButton: PopupMenuButton(
@@ -70,7 +75,7 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
                     children: [
                       Flexible(child: TextFormField(
                         onFieldSubmitted: (value) async {
-                          if(value.isNotEmpty && ulrRegx.hasMatch(value.toString()))
+                          if(value.isNotEmpty && urlRegX.hasMatch(value.toString()))
                             {
 
                               try{
@@ -118,7 +123,7 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
         },
         child:const CircleAvatar(
             radius: 30,
-            backgroundColor:  Color(0XFFE64848),
+            backgroundColor:  kPrimaryColor,
             child:  Icon(Icons.upload,color: Colors.white,)),
 
       ),
@@ -208,9 +213,8 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
                     return GestureDetector(
                        onTap: () async {
                          try{
-                           var bytes=await FetchTemplate.networkImageToBytes(item.url!);
                            showDialog(context: context, builder: (builder)  {
-                             return customDialog(bytes);
+                             return customDialog(base64Decode(item.url!));
                            });
                          }catch(e){
                            log(e.toString());
@@ -218,7 +222,7 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
                          }
 
                        },
-                       child: templateWidget(item));
+                       child: TemplateWidget(item:item,user:user));
               },
               )
             else
@@ -264,26 +268,188 @@ Widget customDialog(bytes){
     ],
   );
 }
-  Widget templateWidget(item){
-    return Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.network(item.url!),
-            const SizedBox(height: 10,),
-            Text(item.name!,style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold
-            ),)
-          ],
-        )
-    );
-  }
+
 }
 
 class CustomTemplateModel{
   final String title;
   final int value;
   const CustomTemplateModel(this.title, this.value);
+}
+class TemplateWidget extends StatefulWidget {
+  final Memes item;
+  final User? user;
+
+  const TemplateWidget({Key? key, required this.item, required this.user}) : super(key: key);
+
+  @override
+  State<TemplateWidget> createState() => _TemplateWidgetState();
+}
+
+class _TemplateWidgetState extends State<TemplateWidget> {
+  late Memes item;
+  User? user;
+  bool isLiked=false;
+  late var images;
+  List? likes=[];
+  bool isLoading=true;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    item=widget.item;
+    user=widget.user;
+    likes=item.likes!;
+    images=base64Decode(item.url!);
+    if(user!=null)
+    {
+      for(var i in likes!) {
+        if (i==user!.uid)
+        {
+
+          setState(() {
+            isLiked = true;
+          });
+          break;
+        }
+      }
+    }
+    setState(() {
+      isLoading=false;
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    final dtNow=DateTime.now();
+    var diff=dtNow.difference(item.timeStamp.toDate());
+    String time='h';
+    if(diff.inDays>0)
+      {
+        time='${diff.inDays}\tdays\t';
+      }
+   else if(diff.inHours>0)
+      {
+        time='${diff.inHours}\thr\t';
+      }
+    else if(diff.inMinutes>0)
+    {
+      time='${diff.inMinutes}\tmin\t';
+    }
+    else
+    {
+      time='${diff.inSeconds}\tsec\t';
+    }
+    return !isLoading?Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.memory(images,isAntiAlias: true,),
+            const SizedBox(height: 10,),
+
+           Column(
+             children: [
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                 children: [
+                   Flexible(
+                     flex:4,
+                     child: Text(item.name!,
+                       maxLines: 2,
+                       style: const TextStyle(
+                           fontSize: 12,
+                           fontWeight: FontWeight.bold
+                       ),),
+                   ),
+                   Flexible(
+
+                     child: ListTile(
+                         onTap: () async {
+                           if(user!=null)
+                           {
+                             if(!isLiked)
+                             {
+                               setState(() {
+                                 isLoading=true;
+                               });
+                               try{
+                                 await FetchTemplate.likeTemplate(item.id!, user!.uid);
+                                 likes!.add(user!.uid);
+                                 isLiked=true;
+                               }catch(e){
+                                 log(e.toString());
+                                 Fluttertoast.showToast(msg: "Something went wrong");
+                               }
+                               setState(() {
+                                 isLoading=false;
+                               });
+                             }
+                             else{
+                               print('ere');
+                               setState(() {
+                                 isLoading=true;
+                               });
+                               try{
+                                 await FetchTemplate.removeTemplateLike(item.id!, user!.uid);
+                                 likes!.remove(user!.uid);
+                                 isLiked=false;
+                               }catch(e){
+                                 log(e.toString());
+                                 Fluttertoast.showToast(msg: "Something went wrong");
+                               }
+                               setState(() {
+                                 isLoading=false;
+                               });
+                             }
+                           }
+                           else{
+                             Fluttertoast.showToast(msg: "Sign in required");
+                           }
+                         },
+                         title: Text(likes!.length.toString()),
+                         contentPadding: EdgeInsets.zero,
+                         horizontalTitleGap: 5,
+                         leading: Icon(!isLiked?Icons.favorite_border:Icons.favorite,color: isLiked?Colors.red:Colors.black,)),
+                   )
+                 ],
+               ),
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                 children: [
+                   const Flexible(
+                     flex:3,
+                     child: Text("upload by SmkWinner",
+                       maxLines: 2,
+                       style:  TextStyle(
+                           fontSize: 12,
+                           fontWeight: FontWeight.bold
+                       ),),
+                   ),
+                   Flexible(
+                     child:ListTile(
+                         contentPadding: EdgeInsets.zero,
+                         horizontalTitleGap: 0,
+                         leading: const Icon(Icons.add,color: Colors.white,),
+                         title: Text('${time}ago',style: const TextStyle(
+                           fontSize: 12
+                         ),)),
+                   )
+                 ],
+               )
+             ],
+           )
+          ],
+        )
+    ):Column(
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width,
+          height: 200,
+          alignment: Alignment.center,
+          child: const CircularProgressIndicator(color: kPrimaryColor,),
+        ),
+        const SizedBox(height: 20,)
+      ],
+    );
+  }
 }

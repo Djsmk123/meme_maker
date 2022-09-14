@@ -1,11 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:meme_maker/providers/drag_provider.dart';
+import 'package:meme_maker/providers/login_signup_provider.dart';
 import 'package:meme_maker/providers/template_provider.dart';
+import 'package:meme_maker/providers/text_field_error_provider.dart';
 import 'package:meme_maker/providers/text_provider.dart';
+import 'package:meme_maker/screens/login_signup_screen.dart';
 import 'package:meme_maker/screens/meme_template_selector.dart';
 import 'package:provider/provider.dart';
 
-void main(){
+import 'firebase_options.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+
+  );
   runApp(const MyApp());
 }
 class MyApp extends StatelessWidget {
@@ -17,15 +29,21 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => TextProvider()),
         ChangeNotifierProvider(create: (_)=>DragProvider()),
-        ChangeNotifierProvider(create: (_)=>TemplateProvider())
+        ChangeNotifierProvider(create: (_)=>TemplateProvider()),
+        ChangeNotifierProvider(create: (_)=>AuthProvider()),
+        ChangeNotifierProvider(create: (_)=>TextFieldErrorProvider()),
+
       ],
-      child: MaterialApp(
-        theme: ThemeData(
-          useMaterial3: true
-        ),
-        debugShowCheckedModeBanner: false,
-        home:const TemplateSelectorScreen()
-      ),
+      builder: (context,widget){
+        User? user=FirebaseAuth.instance.currentUser;
+         return MaterialApp(
+            theme: ThemeData(
+                useMaterial3: true
+            ),
+            debugShowCheckedModeBanner: false,
+            home:user!=null?const TemplateSelectorScreen():const LoginSignupScreen()
+        );
+      },
     );
   }
 }
