@@ -192,7 +192,7 @@ packages:
     source: hosted
     version: "8.0.9"
   google_fonts:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: google_fonts
       url: "https://pub.dartlang.org"

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_font_picker/flutter_font_picker.dart';
 
-import '../models/fontclass.dart';
+import 'package:meme_maker/models/fontclass.dart';
 
 class TextWidget extends StatefulWidget {
   final int index;

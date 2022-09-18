@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TemplateData {
@@ -54,9 +52,10 @@ class Memes {
   int? width;
   int? height;
   int? likeCount;
-  dynamic timeStamp;
+  Timestamp? timeStamp;
   String? uid;
   List<dynamic>? likes;
+
 
   Memes({this.name, this.url, this.width, this.height,this.likes,this.id});
 
@@ -70,6 +69,7 @@ class Memes {
     likeCount=json.containsKey('likeCount')?json['likeCount']:0;
     timeStamp=json.containsKey('timeStamp')?json['timeStamp']:Timestamp.now;
     uid=json.containsKey('uid')?json['uid']:"m74rafnFXddXD5iJt4VEJqEGPR03";
+
   }
 
   Map<String, dynamic> toJson() {
@@ -85,4 +85,10 @@ class Memes {
     data['id']=id;
     return data;
   }
+}
+
+class CustomTemplateModel{
+  final String title;
+  final int value;
+  const CustomTemplateModel(this.title, this.value);
 }

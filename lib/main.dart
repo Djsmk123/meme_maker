@@ -8,6 +8,7 @@ import 'package:meme_maker/providers/text_field_error_provider.dart';
 import 'package:meme_maker/providers/text_provider.dart';
 import 'package:meme_maker/screens/login_signup_screen.dart';
 import 'package:meme_maker/screens/meme_template_selector.dart';
+import 'package:meme_maker/services/authencation_service.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
@@ -18,6 +19,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
 
   );
+  Authentication.listenAuth();
   runApp(const MyApp());
 }
 class MyApp extends StatelessWidget {
@@ -35,10 +37,11 @@ class MyApp extends StatelessWidget {
 
       ],
       builder: (context,widget){
-        User? user=FirebaseAuth.instance.currentUser;
+        User? user=Authentication.user;
          return MaterialApp(
             theme: ThemeData(
-                useMaterial3: true
+                useMaterial3: true,
+              scaffoldBackgroundColor: Colors.white
             ),
             debugShowCheckedModeBanner: false,
             home:user!=null?const TemplateSelectorScreen():const LoginSignupScreen()

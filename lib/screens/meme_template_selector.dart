@@ -1,19 +1,20 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:typed_data';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:meme_maker/models/template_model.dart';
 import 'package:meme_maker/providers/template_provider.dart';
-import 'package:meme_maker/screens/HomeScreen.dart';
+import 'package:meme_maker/screens/meme_maker_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../components/custom_drawer.dart';
 import '../constant.dart';
+import '../services/authencation_service.dart';
 import '../services/getTemplate.dart';
+import 'meme_template_selector_components/sorting_meme_template_widget.dart';
+import 'meme_template_selector_components/template_widget.dart';
 class TemplateSelectorScreen extends StatefulWidget {
   const TemplateSelectorScreen({Key? key}) : super(key: key);
 
@@ -28,10 +29,14 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
     const CustomTemplateModel("from url",1),
 
   ];
+
+  User? user=Authentication.user;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    Provider.of<TemplateProvider>(context,listen: false).isSearched=false;
+    Provider.of<TemplateProvider>(context,listen: false).result.clear();
     initAsync();
   }
   initAsync()async {
@@ -48,17 +53,15 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
     bool isLoading=Provider.of<TemplateProvider>(context).loadingStatus;
     List<Memes>? memes=Provider.of<TemplateProvider>(context).getTemplateData;
     bool isSearched=Provider.of<TemplateProvider>(context).getSearchStatus;
-    final ImagePicker picker = ImagePicker();
-    User? user=FirebaseAuth.instance.currentUser;
     return Scaffold(
-      backgroundColor: Colors.white,
-      floatingActionButton: PopupMenuButton(
+
+      floatingActionButton: isLoading?PopupMenuButton(
         onSelected: (index) async {
           switch(index){
             case 0:{
+
               try{
-                final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-                var bytes=await image!.readAsBytes();
+                var bytes=await FetchTemplate.fetchTemplateFromFile();
                 showDialog(context: context, builder: (builder)  {
                   return customDialog(bytes);
                 });
@@ -126,7 +129,8 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
             backgroundColor:  kPrimaryColor,
             child:  Icon(Icons.upload,color: Colors.white,)),
 
-      ),
+      ):null,
+      endDrawer:const EndDrawer(),
       body: isLoading?NestedScrollView(
         headerSliverBuilder: (context,innerBoxIsScrolled){
           return [
@@ -134,7 +138,15 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
               title: Text("Select meme template",style: TextStyle(
                 color: Colors.grey.shade800,
                 fontSize: 20,
-              ),),
+              ),
+              ),
+              actions: [
+                Builder(
+                  builder: (context)=>IconButton(icon: const Icon(Icons.menu),onPressed: (){
+                    Scaffold.of(context).openEndDrawer();
+                  },),
+                )
+              ],
               floating: false,
               pinned: true,
               scrolledUnderElevation: 0,
@@ -146,29 +158,17 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 0),
               child: Row(
                 children: [
+
                   Flexible(
                     child: TextFormField(
                         controller: searchController,
-                        onChanged: (value){
-                          if(value.isNotEmpty && value.length>3)
-                          {
-
-                            Provider.of<TemplateProvider>(context,listen: false).setSearchStatus=true;
-                            Provider.of<TemplateProvider>(context,listen: false).applyFilter(query: searchController.text);
-                          }
-                        },
-                        onFieldSubmitted: (value){
-                          if(value.isNotEmpty && value.length>3)
-                          {
-
-                            Provider.of<TemplateProvider>(context,listen: false).setSearchStatus=true;
-                            Provider.of<TemplateProvider>(context,listen: false).applyFilter(query: searchController.text);
-                          }
-                        },
+                        onChanged: onSearch,
+                        onFieldSubmitted:onSearch,
                         style: const TextStyle(
                           color:Colors.black,
                         ),
@@ -203,9 +203,11 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
                 ],
               ),
             ),
-            if(memes!=null && memes.isNotEmpty)
+           const Padding(padding:  EdgeInsets.symmetric(horizontal: 10,vertical: 10),child:  SortingWidget(),),
+            if(memes!.isNotEmpty)
               ListView.builder(
                 shrinkWrap: true,
+                padding: EdgeInsets.zero,
                 physics: const NeverScrollableScrollPhysics(),
                   itemCount:memes.length,
                   itemBuilder: (context,index){
@@ -222,7 +224,7 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
                          }
 
                        },
-                       child: TemplateWidget(item:item,user:user));
+                       child: TemplateWidget(item:item));
               },
               )
             else
@@ -240,216 +242,45 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
       ),
     );
   }
-Widget customDialog(bytes){
-  return AlertDialog(
-    title:const Text("Do you want to select this?"),
-    content: Image.memory(bytes),
-    actionsAlignment: MainAxisAlignment.spaceBetween,
-    actions: [
-      GestureDetector(
-        onTap: (){
-          Navigator.pop(context);
-        },
-        child: const Text("No",style: TextStyle(
-            fontSize: 20
-        ),
-        ),
-      ),
-      GestureDetector(
-        onTap: (){
-          Navigator.pop(context);
-          Navigator.push(context, MaterialPageRoute(builder: (builder)=>MemeEditorScreen(image: MemoryImage(bytes))));
-        },
-        child:  const Text("Yes",style: TextStyle(
-            fontSize: 20
-        ),
-        ),
-      )
-    ],
-  );
-}
-
-}
-
-class CustomTemplateModel{
-  final String title;
-  final int value;
-  const CustomTemplateModel(this.title, this.value);
-}
-class TemplateWidget extends StatefulWidget {
-  final Memes item;
-  final User? user;
-
-  const TemplateWidget({Key? key, required this.item, required this.user}) : super(key: key);
-
-  @override
-  State<TemplateWidget> createState() => _TemplateWidgetState();
-}
-
-class _TemplateWidgetState extends State<TemplateWidget> {
-  late Memes item;
-  User? user;
-  bool isLiked=false;
-  late var images;
-  List? likes=[];
-  bool isLoading=true;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    item=widget.item;
-    user=widget.user;
-    likes=item.likes!;
-    images=base64Decode(item.url!);
-    if(user!=null)
+  onSearch(String? value){
+    if(value!.isNotEmpty && value.length>3)
     {
-      for(var i in likes!) {
-        if (i==user!.uid)
-        {
-
-          setState(() {
-            isLiked = true;
-          });
-          break;
-        }
-      }
+      Provider.of<TemplateProvider>(context,listen: false).setSearchStatus=true;
+      Provider.of<TemplateProvider>(context,listen: false).search(query: searchController.text);
     }
-    setState(() {
-      isLoading=false;
-    });
   }
-  @override
-  Widget build(BuildContext context) {
-    final dtNow=DateTime.now();
-    var diff=dtNow.difference(item.timeStamp.toDate());
-    String time='h';
-    if(diff.inDays>0)
-      {
-        time='${diff.inDays}\tdays\t';
-      }
-   else if(diff.inHours>0)
-      {
-        time='${diff.inHours}\thr\t';
-      }
-    else if(diff.inMinutes>0)
-    {
-      time='${diff.inMinutes}\tmin\t';
-    }
-    else
-    {
-      time='${diff.inSeconds}\tsec\t';
-    }
-    return !isLoading?Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.memory(images,isAntiAlias: true,),
-            const SizedBox(height: 10,),
-
-           Column(
-             children: [
-               Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                 children: [
-                   Flexible(
-                     flex:4,
-                     child: Text(item.name!,
-                       maxLines: 2,
-                       style: const TextStyle(
-                           fontSize: 12,
-                           fontWeight: FontWeight.bold
-                       ),),
-                   ),
-                   Flexible(
-
-                     child: ListTile(
-                         onTap: () async {
-                           if(user!=null)
-                           {
-                             if(!isLiked)
-                             {
-                               setState(() {
-                                 isLoading=true;
-                               });
-                               try{
-                                 await FetchTemplate.likeTemplate(item.id!, user!.uid);
-                                 likes!.add(user!.uid);
-                                 isLiked=true;
-                               }catch(e){
-                                 log(e.toString());
-                                 Fluttertoast.showToast(msg: "Something went wrong");
-                               }
-                               setState(() {
-                                 isLoading=false;
-                               });
-                             }
-                             else{
-                               print('ere');
-                               setState(() {
-                                 isLoading=true;
-                               });
-                               try{
-                                 await FetchTemplate.removeTemplateLike(item.id!, user!.uid);
-                                 likes!.remove(user!.uid);
-                                 isLiked=false;
-                               }catch(e){
-                                 log(e.toString());
-                                 Fluttertoast.showToast(msg: "Something went wrong");
-                               }
-                               setState(() {
-                                 isLoading=false;
-                               });
-                             }
-                           }
-                           else{
-                             Fluttertoast.showToast(msg: "Sign in required");
-                           }
-                         },
-                         title: Text(likes!.length.toString()),
-                         contentPadding: EdgeInsets.zero,
-                         horizontalTitleGap: 5,
-                         leading: Icon(!isLiked?Icons.favorite_border:Icons.favorite,color: isLiked?Colors.red:Colors.black,)),
-                   )
-                 ],
-               ),
-               Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                 children: [
-                   const Flexible(
-                     flex:3,
-                     child: Text("upload by SmkWinner",
-                       maxLines: 2,
-                       style:  TextStyle(
-                           fontSize: 12,
-                           fontWeight: FontWeight.bold
-                       ),),
-                   ),
-                   Flexible(
-                     child:ListTile(
-                         contentPadding: EdgeInsets.zero,
-                         horizontalTitleGap: 0,
-                         leading: const Icon(Icons.add,color: Colors.white,),
-                         title: Text('${time}ago',style: const TextStyle(
-                           fontSize: 12
-                         ),)),
-                   )
-                 ],
-               )
-             ],
-           )
-          ],
-        )
-    ):Column(
-      children: [
-        Container(
-          width: MediaQuery.of(context).size.width,
-          height: 200,
-          alignment: Alignment.center,
-          child: const CircularProgressIndicator(color: kPrimaryColor,),
+  Widget customDialog(bytes){
+    return AlertDialog(
+      title:const Text("Do you want to select this?"),
+      content: Image.memory(bytes),
+      actionsAlignment: MainAxisAlignment.spaceBetween,
+      actions: [
+        GestureDetector(
+          onTap: (){
+            Navigator.pop(context);
+          },
+          child: const Text("No",style: TextStyle(
+              fontSize: 20
+          ),
+          ),
         ),
-        const SizedBox(height: 20,)
+        GestureDetector(
+          onTap: (){
+            Navigator.pop(context);
+            Navigator.push(context, MaterialPageRoute(builder: (builder)=>MemeEditorScreen(image: MemoryImage(bytes))));
+          },
+          child:  const Text("Yes",style: TextStyle(
+              fontSize: 20
+          ),
+          ),
+        )
       ],
     );
   }
 }
+
+
+
+
+
+

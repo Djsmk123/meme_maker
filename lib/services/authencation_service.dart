@@ -83,9 +83,9 @@ class Authentication {
 
 
  static Future resetPassword({required String email}) async {
-   final _auth = FirebaseAuth.instance;
+   final auth = FirebaseAuth.instance;
     var errorMessage = "";
-    await _auth.sendPasswordResetEmail(email: email).then((user) {
+    await auth.sendPasswordResetEmail(email: email).then((user) {
       return 0;
     }).catchError((error) {
       switch (error.code.toString().toLowerCase()) {
@@ -120,4 +120,14 @@ class Authentication {
       throw Exception("Something went wrong");
     });
   }
+  static User? user;
+  static listenAuth(){
+    FirebaseAuth.instance.authStateChanges().listen((event) {
+      if(event!=null)
+      {
+        user=event;
+      }
+    });
+  }
+
 }

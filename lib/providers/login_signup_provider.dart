@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../services/authencation_service.dart';
+
 
 class AuthProvider extends ChangeNotifier{
   User? user;
@@ -15,7 +17,7 @@ class AuthProvider extends ChangeNotifier{
     notifyListeners();
   }
   setUser(){
-    user=FirebaseAuth.instance.currentUser;
+    user=Authentication.user;
     notifyListeners();
   }
   set setLoading(value){

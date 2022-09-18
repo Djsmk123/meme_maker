@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../components/dragble_text.dart';
+import '../screens/meme_maker_components/dragble_text.dart';
 class TextProvider extends ChangeNotifier{
   List<DraggableText> dragText=[];
   bool isTopAdded=false;

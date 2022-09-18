@@ -42,7 +42,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
         return true;
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+
         body: SafeArea(
           child: Center(
             child: SingleChildScrollView(

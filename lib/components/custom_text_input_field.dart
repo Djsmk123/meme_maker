@@ -3,9 +3,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:meme_maker/constant.dart';
-
-
 import 'package:provider/provider.dart';
 
 import '../providers/text_field_error_provider.dart';
