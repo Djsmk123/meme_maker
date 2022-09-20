@@ -19,12 +19,10 @@ jobs:
         env:
           FILE_NAME: "android/app/google_service.json"
           FILE_DATA: ${{secrets.GOOGLE_SERVICES_JSON}}
-      - name: Create google_service.json
-        run: cat /lib/firebase_options.dart | base64
-      - name: Putting data firebase_options.dart
+      - uses: "finnp/create-file-action@master"
         env:
-          DATA : ${{secrets.FIREBASE_OPTION }}
-        run: echo $DATA > /lib/firebase_options.dart
+          FILE_NAME: "lib/firebase_options.dart"
+          FILE_DATA: ${{secrets.FIREBASE_OPTION}}
 
       - uses: subosito/flutter-action@v1
       - run: flutter pub get
