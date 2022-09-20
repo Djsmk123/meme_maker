@@ -15,12 +15,10 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '12.x'
-      - name: Create google_service.json
-        run: cat /android/app/google-services.json | base64
-      - name: Putting data google_service.json
-        env : 
-          DATA : ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo $DATA > /android/app/google-services.json
+      - uses: "finnp/create-file-action@master"
+        env:
+          FILE_NAME: "android/app/google_service.json"
+          FILE_DATA: ${{secrets.GOOGLE_SERVICES_JSON}}
       - name: Create google_service.json
         run: cat /lib/firebase_options.dart | base64
       - name: Putting data firebase_options.dart
