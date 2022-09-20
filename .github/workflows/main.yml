@@ -1,0 +1,46 @@
+name: Build & upload to Firebase App Distribution
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - name: Create google_service.json
+      - run: cat /android/app/google-services.json | base64
+      - name: Putting data google_service.json
+      - env : 
+          DATA : ${{ secrets.GOOGLE_SERVICES_JSON }}
+      - run: echo $DATA > /android/app/google-services.json
+      - name: Create google_service.json
+      - run: cat /lib/firebase_options.dart | base64
+      - name: Putting data firebase_options.dart
+      - env:
+          DATA : ${{secrets.FIREBASE_OPTION }}
+      - run: echo $DATA > /lib/firebase_options.dart
+
+      - uses: subosito/flutter-action@v1
+      - run: flutter pub get
+      - run: flutter format --set-exit-if-changed .
+      - run: flutter analyze .
+      - run: flutter build apk
+      - uses: actions/upload-artifact@v1
+        with:
+          name: release-apk
+          path: build/app/outputs/apk/release/app-release.apk
+      - name: upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+            appId: ${{secrets.APPID}}
+            token: ${{secrets.TOKEN}}
+            groups: pre_tester
+            file: build/app/outputs/apk/release/app-release.apk
