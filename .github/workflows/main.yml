@@ -16,17 +16,17 @@ jobs:
         with:
           java-version: '12.x'
       - name: Create google_service.json
-      - run: cat /android/app/google-services.json | base64
+        run: cat /android/app/google-services.json | base64
       - name: Putting data google_service.json
-      - env : 
+        env : 
           DATA : ${{ secrets.GOOGLE_SERVICES_JSON }}
-      - run: echo $DATA > /android/app/google-services.json
+        run: echo $DATA > /android/app/google-services.json
       - name: Create google_service.json
-      - run: cat /lib/firebase_options.dart | base64
+        run: cat /lib/firebase_options.dart | base64
       - name: Putting data firebase_options.dart
-      - env:
+        env:
           DATA : ${{secrets.FIREBASE_OPTION }}
-      - run: echo $DATA > /lib/firebase_options.dart
+        run: echo $DATA > /lib/firebase_options.dart
 
       - uses: subosito/flutter-action@v1
       - run: flutter pub get
