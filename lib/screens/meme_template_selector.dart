@@ -36,6 +36,7 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
     // TODO: implement initState
     super.initState();
     Provider.of<TemplateProvider>(context,listen: false).isSearched=false;
+    Provider.of<TemplateProvider>(context,listen: false).isLoading=true;
     Provider.of<TemplateProvider>(context,listen: false).result.clear();
     initAsync();
   }
@@ -43,8 +44,9 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
     try{
       await Provider.of<TemplateProvider>(context,listen:false).setTemplateData();
     }finally{
-      Provider.of<TemplateProvider>(context,listen:false).setLoading();
+     Provider.of<TemplateProvider>(context,listen: false).setLoading();
     }
+
 
 
   }

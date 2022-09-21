@@ -49,7 +49,9 @@ class EndDrawer extends StatelessWidget {
             if(!isLoggedIn)
               drawerRowWidget(title: "Login", icon: Icons.login, onTap: (){
                 if(!isLoggedIn){
-                  Fluttertoast.showToast(msg: "Login required");
+                  Navigator.pop(context);
+                  Navigator.popUntil(context, (route) => false);
+                  Navigator.push(context, MaterialPageRoute(builder: (builder)=>const LoginSignupScreen()));
                 }
               }),
             drawerRowWidget(title: "Edit Profile", icon: Icons.person, onTap: (){

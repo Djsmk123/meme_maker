@@ -44,7 +44,7 @@ dependencies:
   firebase_auth: ^3.8.0
   google_fonts:
   simple_animations: ^4.0.1
-  firebase_core:
+  firebase_core: ^1.22.0
   http:
   fluttertoast:
   provider:

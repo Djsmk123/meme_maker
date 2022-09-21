@@ -125,7 +125,7 @@ class _TemplateWidgetState extends State<TemplateWidget> {
                     )
                   ],
                 ),
-                if(user!=null || user!.uid==item.uid)
+                if(user!=null && user.uid==item.uid)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
