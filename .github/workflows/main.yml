@@ -15,15 +15,15 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '12.x'
-      - uses: "finnp/create-file-action@master"
+      - name: Decode google-services.json
+        env: 
+            GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo $GOOGLE_SERVICES_JSON > ./android/app/google-services.json
+      - name: Decode firebase_option
         env:
-          FILE_NAME: "android/app/google_service.json"
-          FILE_DATA: ${{secrets.GOOGLE_SERVICES_JSON}}
-      - uses: "finnp/create-file-action@master"
-        env:
-          FILE_NAME: "lib/firebase_options.dart"
-          FILE_DATA: ${{secrets.FIREBASE_OPTION}}
-
+          firebase_options_dart: ${{secrets.FIREBASE_OPTION}}
+        run : echo $firebase_options_dart > ./lib/firebase_options.dart
+              
       - uses: subosito/flutter-action@v1
       - run: flutter pub get
       - run: flutter build apk
