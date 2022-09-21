@@ -1,5 +1,7 @@
 // ignore_for_file: file_names
 
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -47,8 +49,9 @@ class FetchTemplate {
     static Future deleteTemplate({required String templateId})async{
       await collection.doc(templateId).delete();
     }
-    static Future uploadTemplate({required String templateId,required Memes tmp})async{
-      await collection.doc(templateId).update(tmp.toJson());
+    static Future uploadTemplate({required int templateId,required Memes tmp})async{
+
+      await collection.doc(templateId.toString()).set(tmp.toJson());
     }
 
 }

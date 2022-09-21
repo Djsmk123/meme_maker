@@ -57,7 +57,7 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
     bool isSearched=Provider.of<TemplateProvider>(context).getSearchStatus;
     return Scaffold(
 
-      floatingActionButton: isLoading?PopupMenuButton(
+      floatingActionButton: !isLoading?PopupMenuButton(
         onSelected: (index) async {
           switch(index){
             case 0:{
@@ -133,7 +133,7 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
 
       ):null,
       endDrawer:const EndDrawer(),
-      body: isLoading?NestedScrollView(
+      body: !isLoading?NestedScrollView(
         headerSliverBuilder: (context,innerBoxIsScrolled){
           return [
             SliverAppBar(

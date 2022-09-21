@@ -51,7 +51,6 @@ class Memes {
   String? url;
   int? width;
   int? height;
-  int? likeCount;
   Timestamp? timeStamp;
   String? uid;
   List<dynamic>? likes;
@@ -66,7 +65,6 @@ class Memes {
     width = json['width'];
     id=json['id'];
     height = json['height'];
-    likeCount=json.containsKey('likeCount')?json['likeCount']:0;
     timeStamp=json.containsKey('timeStamp')?json['timeStamp']:Timestamp.now;
     uid=json.containsKey('uid')?json['uid']:"m74rafnFXddXD5iJt4VEJqEGPR03";
 
@@ -78,7 +76,6 @@ class Memes {
     data['url'] = url;
     data['width'] = width;
     data['height'] = height;
-    data['likeCount']=likeCount??0;
     data['timeStamp']=timeStamp;
     data['uid']=uid;
     data['likes']=likes;

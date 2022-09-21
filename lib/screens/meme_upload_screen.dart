@@ -1,11 +1,21 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:convert';
 import 'dart:developer';
+import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meme_maker/components/custom_drawer.dart';
 import 'package:meme_maker/constant.dart';
+import 'package:meme_maker/models/template_model.dart';
+import 'package:meme_maker/services/authencation_service.dart';
 import 'package:meme_maker/services/getTemplate.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/template_provider.dart';
 
 class MemeUploadScreen extends StatefulWidget {
   const MemeUploadScreen({Key? key}) : super(key: key);
@@ -15,208 +25,290 @@ class MemeUploadScreen extends StatefulWidget {
 }
 
 class _MemeUploadScreenState extends State<MemeUploadScreen> {
-  bool isLoading=false;
+  bool isLoading = false;
+  String? url;
+  String? nameTemplate = "Template";
+  final GlobalKey<FormState> key = GlobalKey<FormState>();
   Uint8List? bytes;
-  String? name="Template";
+  bool imageUpload=false;
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
-      endDrawer: const EndDrawer(),
-      appBar: AppBar(
-        title: Text("Upload meme template",style: TextStyle(
-          color: Colors.grey.shade800,
-          fontSize: 20,
-        ),
-        ),
-        actions: [
-          Builder(
-            builder: (context)=>IconButton(icon: const Icon(Icons.menu),onPressed: (){
-              Scaffold.of(context).openEndDrawer();
-            },),
-          )
-        ],
-        scrolledUnderElevation: 0,
-      ),
-      body: isLoading?const Center(child: CircularProgressIndicator(color: kPrimaryColor,),):
-      (bytes!=null?Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.memory(bytes!),
-            Text(name!,style: const TextStyle(color: Colors.red),)
+        endDrawer: const EndDrawer(),
+        appBar: AppBar(
+          title: Text(
+            "Upload meme template",
+            style: TextStyle(
+              color: Colors.grey.shade800,
+              fontSize: 20,
+            ),
+          ),
+          actions: [
+            Builder(
+              builder: (context) => IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () {
+                  Scaffold.of(context).openEndDrawer();
+                },
+              ),
+            )
           ],
+          scrolledUnderElevation: 0,
         ),
-      ):Center(child: GestureDetector(
-        onTap: (){},
-        child: InkWell(
-          onTap: () async {
-
-             List? result=await showDialog(context: context, builder: (builder){
-               final GlobalKey<FormState> key=GlobalKey<FormState>();
-
-               bool isLoading=false;
-               String? nameTemplate;
-               Uint8List? bytes1;
-               return StatefulBuilder(
-                builder: (context,setState) {
-
-                  return !isLoading?AlertDialog(
-                    title: const Text("Select image"),
-                    content: Form(
-                      key: key,
-                      child: Center(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
+        body: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: kPrimaryColor,
+                ),
+              )
+            : Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if(!imageUpload)
+                  Form(
+                    key: key,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
                             children: [
-                              Row(
-                                children: [
-                                  Flexible(
-                                      child: TextFormField(
-                                        validator: (value){
-                                          if(value!.isEmpty)
-                                          {
-                                            return "Template can't be empty";
-                                          }
-                                          return null;
-                                        },
-                                        onChanged: (value){
-                                          nameTemplate=value;
-                                        },
-                                        decoration: InputDecoration(
-                                            hintText:"Template name",
-                                            border: OutlineInputBorder(
-                                              borderSide: const BorderSide(color: Colors.black,width: 1),
-                                              borderRadius: BorderRadius.circular(16),
-                                            ),
-                                            focusedBorder:  OutlineInputBorder(
-                                              borderSide: const BorderSide(color: Colors.black,width: 1),
-                                              borderRadius: BorderRadius.circular(16),
-                                            )
-                                        ),
-                                      )),
-                                ],
-                              ),
-                              const SizedBox(height: 20,),
-                              Row(
-                                children: [
-                                  Flexible(
-                                      child: TextFormField(
-                                       onFieldSubmitted: (value) async {
-                                        if(value.isNotEmpty && urlRegX.hasMatch(value.toString()))
-                                         {setState((){
-                                           isLoading=true;
-                                         });
-                                        try{
-                                          bytes1=await FetchTemplate.networkImageToBytes(value);
-                                        }catch(e){
-                                          log(e.toString());
-                                          Fluttertoast.showToast(msg: "Something wrong with url.");
-                                        }
+                              Flexible(
+                                  child: TextFormField(
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "Template can't be empty";
                                       }
-                                        setState((){
-                                          isLoading=false;
-                                        });
+                                      return null;
                                     },
-                                        validator: (value){
-                                          if(value!.isEmpty && bytes1==null)
-                                          {
-                                            return "Image link or file required";
-                                          }
-                                          return null;
-                                        },
+                                    onChanged: (value) {
+                                      nameTemplate = value;
+                                    },
                                     decoration: InputDecoration(
+                                        hintText: "Template name",
 
-                                        prefixIcon: const Icon(Icons.link),
                                         border: OutlineInputBorder(
-                                          borderSide: const BorderSide(color: Colors.black,width: 1),
+                                          borderSide: const BorderSide(
+                                              color: Colors.black, width: 1),
                                           borderRadius: BorderRadius.circular(16),
                                         ),
-                                        hintText:"Enter url of image",
-                                        focusedBorder:  OutlineInputBorder(
-                                          borderSide: const BorderSide(color: Colors.black,width: 1),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                              color: Colors.black, width: 1),
                                           borderRadius: BorderRadius.circular(16),
-                                        )
-                                    ),
+                                        )),
                                   )),
-                                ],
-                              ),
-                              const Divider(height: 20,thickness: 5,),
-                              const Text("OR",style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20
-                              ),
-                              ),
-                              const Divider(height: 20,thickness: 5,),
-                              GestureDetector(onTap: () async {
-                                setState((){
-                                  isLoading=true;
-                                });
-                                try{
-                                  bytes1=await FetchTemplate.fetchTemplateFromFile();
-                                }catch(e){
-                                  Fluttertoast.showToast(msg: "Something went wrong");
-                                }
-
-                                setState((){
-                                  isLoading=false;
-                                });
-                              },child: const Icon(Icons.file_present_rounded,size: 50,),),
-                              if(bytes1!=null)
-                                Image.memory(bytes1!)
                             ],
                           ),
                         ),
-                      ),
-                    ),
-                    actionsAlignment: MainAxisAlignment.spaceBetween,
-                    actions: [
-                      GestureDetector(
-                        onTap: (){
-                          Navigator.pop(context);
-                        },
-                        child: const Text("No",style: TextStyle(
-                            fontSize: 20
+                        const SizedBox(height: 5,),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Flexible(
+                                  child: TextFormField(
+                                    onFieldSubmitted: (value) async {
+                                      url=value;
+                                      imageFromNetwork;
+                                    },
+                                    onChanged: (value){
+                                        url=value;
+                                    },
+                                    validator: (value) {
+                                      if (value!.isEmpty && bytes == null) {
+                                        return "Image link or file required";
+                                      }
+                                      return null;
+                                    },
+                                    decoration: InputDecoration(
+                                        prefixIcon: const Icon(Icons.link),
+                                        border: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                              color: Colors.black, width: 1),
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
+                                        hintText: "Enter url of image",
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                              color: Colors.black, width: 1),
+                                          borderRadius: BorderRadius.circular(16),
+                                        )),
+                                  )),
+                            ],
+                          ),
                         ),
+                        const Divider(
+                          height: 20,
+                          thickness: 5,
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: (){
-                          if(key.currentState!.validate())
-                            {
-                              Navigator.pop(context,[bytes1,nameTemplate]);
+                        const Text(
+                          "OR",
+                          style: TextStyle(color: Colors.black, fontSize: 20),
+                        ),
+                        const Divider(
+                          height: 20,
+                          thickness: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            try {
+                              bytes =
+                              await FetchTemplate.fetchTemplateFromFile();
+                            } catch (e) {
+                              Fluttertoast.showToast(
+                                  msg: "Something went wrong");
                             }
 
-                        },
-                        child:  const Text("Yes",style: TextStyle(
-                            fontSize: 20
+                            setState(() {
+                              isLoading = false;
+                            });
+                          },
+                          child: const Icon(
+                            Icons.file_present_rounded,
+                            size: 50,
+                          ),
                         ),
-                        ),
-                      )
-                    ],
-                  ):const Center(child: CircularProgressIndicator(color: kPrimaryColor,),);
-                }
-              );
-            });
-             if(result!=null)
-               {
-                 bytes=result[0];
-                 setState(() {
+                        GestureDetector(
+                          onTap: !isLoading?()async{
+                            if(key.currentState!.validate()){
+                              if(bytes==null)
+                                {
+                                  imageFromNetwork;
+                                }
+                              setState(() {
+                                imageUpload=true;
+                              });
+                            }
+                          }:null,
+                          child: Container(
+                            alignment: Alignment.center,
+                            margin: const EdgeInsets.all(20),
+                            padding:const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                            decoration: BoxDecoration(
+                                color: kPrimaryColor,
+                                borderRadius: BorderRadius.circular(16)
+                            ),
+                            child: !isLoading?const Text("Select",style:TextStyle(color: Colors.white,fontSize: 20),):const CircularProgressIndicator(
+                              color: kPrimaryColor,
+                            ),
+                          ),
+                        )
 
-                 });
-               }
+                      ],
+                    ),
+                  )
+                 else
+                   Column(
+                     children: [
 
-          },
-          child: Image.asset("assets/images/uploadImg.jpg",scale: 2,),
-        ),
-      ),))
+                       Padding(
+                         padding: const EdgeInsets.symmetric(horizontal: 20),
+                         child: Stack(children: [
 
-    );
+                           Image.memory(bytes!),
+                           Align(
+                             alignment: Alignment.topRight,
+                             child: GestureDetector(
+                               onTap: (){
+                                 setState(() {
+                                   bytes==null;
+                                   imageUpload=false;
+                                 });
+                               },
+                               child: const Icon(Icons.clear,color: kPrimaryColor,size: 35,),
+                             ),
+                           )
+                         ],
+                         ),
+                       ),
+                       Padding(
+                         padding: const EdgeInsets.symmetric(vertical: 20),
+                         child: Center(
+                           child: Text(nameTemplate!,style: const TextStyle(
+                               color: Colors.black,
+                               fontSize: 20
+                           ),),
+                         ),
+                       ),
+                       GestureDetector(
+                         onTap: !isLoading?()async{
+                           try{
 
+                             setState(() {
+                               isLoading=true;
+                             });
+                             int templateId=Random().nextInt(9999998)+DateTime.now().millisecondsSinceEpoch;
+                             var decodeImg=await decodeImageFromList(bytes!);
+                             Memes meme=Memes.fromJson({
+                               'height':decodeImg.height,
+                               'width':decodeImg.width,
+                               'likes':[],
+                               'id':templateId.toString(),
+                               'url':base64Encode(bytes!),
+                               'name':nameTemplate!,
+                               'uid':Authentication.user!.uid,
+                               'timeStamp':Timestamp.now(),
+                             });
+                             await FetchTemplate.uploadTemplate(templateId: templateId, tmp: meme);
+                             await Provider.of<TemplateProvider>(context,listen:false).setTemplateData();
+                             setState(() {
+                               isLoading=false;
+                             });
+                             Fluttertoast.showToast(msg: "Upload successfully");
+                             Navigator.pop(context);
+                           }catch(e){
+                             print(e.toString());
+                             Fluttertoast.showToast(msg: "Something went wrong");
+                           }
+                           setState(() {
+                             isLoading=false;
+                           });
+
+                         }:null,
+                         child: Container(
+                           alignment: Alignment.center,
+                           margin: const EdgeInsets.all(20),
+                           padding:const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                           decoration: BoxDecoration(
+                             color: kPrimaryColor,
+                             borderRadius: BorderRadius.circular(16)
+                           ),
+                           child: !isLoading?const Text("Upload",style:TextStyle(color: Colors.white,fontSize: 20),):const CircularProgressIndicator(
+                             color: kPrimaryColor,
+                           ),
+                         ),
+                       )
+                     ],
+                   )
+                ],
+              ),
+            )));
   }
-
+  get imageFromNetwork async {
+    if (url!.isNotEmpty &&
+        urlRegX.hasMatch(url.toString())) {
+      setState(() {
+        isLoading = true;
+      });
+      try {
+        bytes =
+            await FetchTemplate.networkImageToBytes(
+            url!);
+      } catch (e) {
+        print(e.toString());
+        Fluttertoast.showToast(
+            msg: "Something wrong with url.");
+      }
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
 }

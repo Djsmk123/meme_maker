@@ -1,9 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meme_maker/providers/template_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../constant.dart';
 import '../../models/template_model.dart';
@@ -152,8 +156,21 @@ class _TemplateWidgetState extends State<TemplateWidget> {
                                   ),
                                 ),
                                 GestureDetector(
-                                  onTap: (){
+                                  onTap: () async {
                                     Navigator.pop(context);
+                                    try{
+                                      Provider.of<TemplateProvider>(context,listen:false).setLoading();
+                                      await FetchTemplate.deleteTemplate(templateId: item.id!);
+                                      Provider.of<TemplateProvider>(context,listen: false).setTemplateData();
+                                      setState(() {
+                                        Provider.of<TemplateProvider>(context,listen: false).setTemplateData();
+                                      });
+                                      Provider.of<TemplateProvider>(context,listen:false).setLoading();
+                                    }catch(e){
+                                      print(e.toString());
+                                      getFlutterToast;
+                                    }
+
                                   },
                                   child:const Text("Yes",style: TextStyle(
                                       color: Colors.black,
@@ -210,3 +227,6 @@ class _TemplateWidgetState extends State<TemplateWidget> {
 }
 
 
+get getFlutterToast{
+  Fluttertoast.showToast(msg: "Something went wrong");
+}
