@@ -85,8 +85,12 @@ class _CustomTextInputContainerState extends State<CustomTextInputContainer> {
                 ),
                 contentPadding:
                 const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                errorText: "",
+                errorText: null,
                 border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: const BorderSide(color: Colors.black)
+                ),
+                enabledBorder:OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: const BorderSide(color: Colors.black)
                 ),

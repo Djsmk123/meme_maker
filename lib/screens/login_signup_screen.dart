@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meme_maker/constant.dart';
@@ -123,7 +124,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                           ),
                         ),
                       ),
-                    GestureDetector(
+                     GestureDetector(
                       onTap: () async {
                         if(formKey.currentState!.validate()){
                           if(!isForgotPassword)
@@ -182,6 +183,38 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                         child:!isLoading?Text(!isForgotPassword?"Continue":"Forgot Password",style: const TextStyle(
                           color: Colors.white,
                           fontSize: 20
+                        ),):const CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    if(!isForgotPassword)
+                    GestureDetector(
+                      onTap: () async {
+                        try{
+                          Provider.of<AuthProvider>(context,listen: false).setLoading=false;
+                          await FirebaseAuth.instance.signInAnonymously();
+                          Provider.of<AuthProvider>(context,listen: false).setLoading=false;
+                          Navigator.pop(context);
+                          Navigator.push(context, MaterialPageRoute(builder: (builder)=>const TemplateSelectorScreen()));
+                        }catch(e){
+                          Fluttertoast.showToast(msg: "Something went wrong");
+                        }
+                        Provider.of<AuthProvider>(context,listen: false).setLoading=false;
+
+
+                      },
+                      child: Container(
+                        margin:const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: kPrimaryColor,
+                            borderRadius: BorderRadius.circular(16)
+                        ),
+                        child:!isLoading?const Text("Skip",style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20
                         ),):const CircularProgressIndicator(
                           color: Colors.white,
                         ),

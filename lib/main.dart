@@ -11,13 +11,12 @@ import 'package:meme_maker/screens/meme_template_selector.dart';
 import 'package:meme_maker/services/authencation_service.dart';
 import 'package:provider/provider.dart';
 
-import 'firebase_options.dart';
+import 'package:meme_maker/firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-
   );
   Authentication.listenAuth();
   runApp(const MyApp());

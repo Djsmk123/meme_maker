@@ -123,7 +123,7 @@ class Authentication {
   static User? user;
   static listenAuth(){
     FirebaseAuth.instance.authStateChanges().listen((event) {
-      if(event!=null)
+      if(event!=null && !event.isAnonymous)
       {
         user=event;
       }
