@@ -152,8 +152,10 @@ class _TextWidgetState extends State<TextWidget> {
                     expands: true,
                     maxLines: null,
                     autofocus: false,
+                    textAlignVertical: TextAlignVertical.center,
                     cursorWidth: isFocused ? 2 : 0,
                     autocorrect: true,
+
                     style: fontClass.selectedFontTextStyle.copyWith(
                         color: fontClass.currentColor,
                         fontSize: fontClass.fontSize),

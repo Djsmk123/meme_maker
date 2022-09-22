@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:meme_maker/models/user_model.dart';
 
 class Authentication {
   static Future signUp(
@@ -122,11 +124,31 @@ class Authentication {
   }
 
   static User? user;
-  static listenAuth() {
-    FirebaseAuth.instance.authStateChanges().listen((event) {
+  static UserModel? userModel;
+  static  listenAuth()=>
+    FirebaseAuth.instance.authStateChanges().listen((event) async {
       if (event != null && !event.isAnonymous) {
         user = event;
+        await getUserProfile;
+      }
+      else{
+        user=null;
+        userModel=null;
       }
     });
+
+  static createProfile(UserModel userModel)async{
+    await FirebaseFirestore.instance.collection('users').doc(user!.uid).set(userModel.toJson());
+    await getUserProfile;
+  }
+  static updateProfile(UserModel userModel)async {
+    await FirebaseFirestore.instance.collection('users').doc(user!.uid).update(userModel.toJson());
+    await getUserProfile;
+  }
+
+  static get getUserProfile async {
+    var doc=await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
+    Map<String,dynamic>? data=doc.data();
+    userModel=UserModel.fromJson(data!);
   }
 }

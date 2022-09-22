@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meme_maker/models/template_model.dart';
+import 'package:meme_maker/services/authencation_service.dart';
 
 import '../services/getTemplate.dart';
 
@@ -34,13 +35,21 @@ class TemplateProvider extends ChangeNotifier {
     applyFilter();
   }
 
-  applyFilter({bool byTime = false, String? uid}) {
+  applyFilter({bool byTime = false, String? uid,bool onlyFav=false}) {
     result.clear();
     result.addAll(templateData!);
     if (byTime) {
       result.sort((a, b) => b.timeStamp!.compareTo(a.timeStamp!));
       notifyListeners();
       return;
+    }
+    if(onlyFav){
+      for (var elements in templateData!) {
+        if (!elements.likes!.contains(Authentication.user!.uid)) {
+          result.remove(elements);
+        }
+      }
+      notifyListeners();
     }
     if (uid != null) {
       for (var elements in templateData!) {
@@ -51,7 +60,6 @@ class TemplateProvider extends ChangeNotifier {
       notifyListeners();
       return;
     }
-
     result.sort((a, b) => b.likes!.length.compareTo(a.likes!.length));
     notifyListeners();
     return;

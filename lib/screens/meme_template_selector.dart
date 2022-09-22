@@ -64,6 +64,7 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
                     {
                       try {
                         var bytes = await FetchTemplate.fetchTemplateFromFile();
+
                         showDialog(
                             context: context,
                             builder: (builder) {
@@ -91,6 +92,8 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
                                         try {
                                           var bytes = await FetchTemplate
                                               .networkImageToBytes(value);
+
+
                                           // ignore: use_build_context_synchronously
                                           Navigator.pop(context);
                                           showDialog(
@@ -255,8 +258,7 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
                                   showDialog(
                                       context: context,
                                       builder: (builder) {
-                                        return customDialog(
-                                            base64Decode(item.url!));
+                                        return customDialog(base64Decode(item.url!));
                                       });
                                 } catch (e) {
                                   log(e.toString());

@@ -41,9 +41,16 @@ class _SortingWidgetState extends State<SortingWidget> {
             isLoggedIn: isLoggedIn),
         if (isLoggedIn)
           sortingWidgets(
-              title: 'your templates',
+              title: 'yours',
               isActive: index == 2,
               index: 2,
+              context: context,
+              isLoggedIn: isLoggedIn),
+        if(isLoggedIn)
+          sortingWidgets(
+              title: 'Favourite',
+              isActive: index == 3,
+              index: 3,
               context: context,
               isLoggedIn: isLoggedIn),
       ],
@@ -55,7 +62,9 @@ class _SortingWidgetState extends State<SortingWidget> {
         index;
     Provider.of<TemplateProvider>(context, listen: false).applyFilter(
         byTime: index == 1 ? true : false,
-        uid: isLoggedIn && index == 2 ? user!.uid : null);
+        uid: isLoggedIn && index == 2 ? user!.uid : null,
+        onlyFav: isLoggedIn && index==3
+    );
   }
 
   sortingWidgets(

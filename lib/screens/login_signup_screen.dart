@@ -1,11 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:developer';
+import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meme_maker/constant.dart';
+import 'package:meme_maker/models/user_model.dart';
 import 'package:meme_maker/providers/login_signup_provider.dart';
 import 'package:meme_maker/screens/meme_template_selector.dart';
 import 'package:meme_maker/services/authencation_service.dart';
@@ -176,13 +177,17 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                       builder: (builder) =>
                                           const TemplateSelectorScreen()));
                             } on Exception catch (e) {
-                              log('error $e');
+                              debugPrint('error $e');
                               if (e.toString() ==
                                   "Exception: User with this email doesn't exist.") {
                                 try {
                                   await Authentication.signUp(
                                       email: model.email!,
                                       password: model.pass!);
+                                  await Authentication.createProfile(UserModel.fromJson({
+                                    "name":"No_Name@${Random().nextInt(6898989)}",
+                                    "img":null,
+                                  }));
                                   Navigator.pop(context);
                                   Navigator.push(
                                       context,
@@ -210,7 +215,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                               Provider.of<AuthProvider>(context, listen: false)
                                   .setPasswordResetRequest = false;
                             } catch (e) {
-                              log(e.toString());
+                              debugPrint(e.toString());
                               Fluttertoast.showToast(
                                   msg: "Something went wrong");
                             }
@@ -274,7 +279,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                           child: !isLoading
                               ? const Text(
                                   "Skip",
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                       color: Colors.white, fontSize: 20),
                                 )
                               : const CircularProgressIndicator(

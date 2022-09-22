@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meme_maker/providers/template_provider.dart';
@@ -49,15 +50,45 @@ class _TemplateWidgetState extends State<TemplateWidget> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          item.name!,
-                          maxLines: 2,
-                          style: const TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.bold),
+                        Flexible(
+                          flex: 1,
+                          child: RichText(
+                              maxLines: 2,
+                              text: TextSpan(
+                              text: item.name!.toUpperCase(),style:const TextStyle(
+                              color: Colors.black,
+                              fontSize: 20
+                          ),
+
+                            children:[
+                              if(item.userName!=null)
+                              const TextSpan(
+                                text: ",\tupload by SmkWinner",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600
+                                )
+                              ),
+
+                            ]
+                          )),
                         ),
-                        SizedBox(
-                          width: 50,
-                          child: ListTile(
+
+                        Flexible(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '${time}ago',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                            const SizedBox(width: 10,),
+                          SizedBox(
+                            width: 50,
+                            child: ListTile(
                               onTap: () async {
                                 if (user != null) {
                                   if (!isLiked) {
@@ -108,41 +139,12 @@ class _TemplateWidgetState extends State<TemplateWidget> {
                                     ? Icons.favorite_border
                                     : Icons.favorite,
                                 color: isLiked ? Colors.red : Colors.black,
-                              )),
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "upload by SmkWinner",
-                          maxLines: 2,
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          width: 100,
-                          child: ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              horizontalTitleGap: 0,
-                              leading: const Icon(
-                                Icons.add,
-                                color: Colors.white,
                               ),
-                              title: Text(
-                                '${time}ago',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 12),
-                              )),
-                        )
-                      ],
-                    ),
-                    if (user != null && user.uid == item.uid)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
+                            ),
+                          ),
+                          if (user != null && user.uid == item.uid)
+                          const SizedBox(width: 10,),
+                            if (user != null && user.uid == item.uid)
                           GestureDetector(
                             onTap: () {
                               showDialog(
@@ -158,7 +160,7 @@ class _TemplateWidgetState extends State<TemplateWidget> {
                                         image,
                                       ),
                                       actionsAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                       actions: [
                                         GestureDetector(
                                           onTap: () {
@@ -176,28 +178,30 @@ class _TemplateWidgetState extends State<TemplateWidget> {
                                             Navigator.pop(context);
                                             try {
                                               Provider.of<TemplateProvider>(
-                                                      context,
-                                                      listen: false)
+                                                  context,
+                                                  listen: false)
                                                   .setLoading();
                                               await FetchTemplate
                                                   .deleteTemplate(
-                                                      templateId: item.id!);
+                                                  templateId: item.id!);
                                               Provider.of<TemplateProvider>(
-                                                      context,
-                                                      listen: false)
+                                                  context,
+                                                  listen: false)
                                                   .setTemplateData();
                                               setState(() {
                                                 Provider.of<TemplateProvider>(
-                                                        context,
-                                                        listen: false)
+                                                    context,
+                                                    listen: false)
                                                     .setTemplateData();
                                               });
                                               Provider.of<TemplateProvider>(
-                                                      context,
-                                                      listen: false)
+                                                  context,
+                                                  listen: false)
                                                   .setLoading();
                                             } catch (e) {
-                                              print(e.toString());
+                                              if (kDebugMode) {
+                                                print(e.toString());
+                                              }
                                               getFlutterToast;
                                             }
                                           },
@@ -214,11 +218,15 @@ class _TemplateWidgetState extends State<TemplateWidget> {
                             },
                             child: const Icon(
                               Icons.delete,
-                              color: kPrimaryColor,
                             ),
-                          )
-                        ],
-                      )
+                          ),
+                          ],
+                          ),
+                        )
+                      ],
+                    ),
+
+
                   ],
                 )
               ],

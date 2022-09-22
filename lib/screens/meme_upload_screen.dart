@@ -1,11 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meme_maker/components/custom_drawer.dart';
@@ -36,26 +35,7 @@ class _MemeUploadScreenState extends State<MemeUploadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         endDrawer: const EndDrawer(),
-        appBar: AppBar(
-          title: Text(
-            "Upload meme template",
-            style: TextStyle(
-              color: Colors.grey.shade800,
-              fontSize: 20,
-            ),
-          ),
-          actions: [
-            Builder(
-              builder: (context) => IconButton(
-                icon: const Icon(Icons.menu),
-                onPressed: () {
-                  Scaffold.of(context).openEndDrawer();
-                },
-              ),
-            )
-          ],
-          scrolledUnderElevation: 0,
-        ),
+        appBar:customAppBar("Upload meme template"),
         body: isLoading
             ? const Center(
                 child: CircularProgressIndicator(
@@ -212,7 +192,7 @@ class _MemeUploadScreenState extends State<MemeUploadScreen> {
                                         color: kPrimaryColor,
                                       ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       )
@@ -263,8 +243,7 @@ class _MemeUploadScreenState extends State<MemeUploadScreen> {
                                       int templateId = Random()
                                               .nextInt(9999998) +
                                           DateTime.now().millisecondsSinceEpoch;
-                                      var decodeImg =
-                                          await decodeImageFromList(bytes!);
+                                      var decodeImg = await decodeImageFromList(bytes!);
                                       Memes meme = Memes.fromJson({
                                         'height': decodeImg.height,
                                         'width': decodeImg.width,
@@ -277,10 +256,7 @@ class _MemeUploadScreenState extends State<MemeUploadScreen> {
                                       });
                                       await FetchTemplate.uploadTemplate(
                                           templateId: templateId, tmp: meme);
-                                      await Provider.of<TemplateProvider>(
-                                              context,
-                                              listen: false)
-                                          .setTemplateData();
+                                      await Provider.of<TemplateProvider>(context, listen: false).setTemplateData();
                                       setState(() {
                                         isLoading = false;
                                       });
@@ -288,7 +264,9 @@ class _MemeUploadScreenState extends State<MemeUploadScreen> {
                                           msg: "Upload successfully");
                                       Navigator.pop(context);
                                     } catch (e) {
-                                      print(e.toString());
+                                      if (kDebugMode) {
+                                        print(e.toString());
+                                      }
                                       Fluttertoast.showToast(
                                           msg: "Something went wrong");
                                     }
@@ -331,7 +309,9 @@ class _MemeUploadScreenState extends State<MemeUploadScreen> {
       try {
         bytes = await FetchTemplate.networkImageToBytes(url!);
       } catch (e) {
-        print(e.toString());
+        if (kDebugMode) {
+          print(e.toString());
+        }
         Fluttertoast.showToast(msg: "Something wrong with url.");
       }
     }
@@ -339,4 +319,26 @@ class _MemeUploadScreenState extends State<MemeUploadScreen> {
       isLoading = false;
     });
   }
+}
+ AppBar customAppBar(title){
+  return AppBar(
+    title: Text(
+      title,
+      style: TextStyle(
+        color: Colors.grey.shade800,
+        fontSize: 20,
+      ),
+    ),
+    actions: [
+      Builder(
+        builder: (context) => IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {
+            Scaffold.of(context).openEndDrawer();
+          },
+        ),
+      )
+    ],
+    scrolledUnderElevation: 0,
+  );
 }

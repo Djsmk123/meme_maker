@@ -1,7 +1,5 @@
 // ignore_for_file: file_names
 
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -24,9 +22,9 @@ class FetchTemplate {
     }
   }
 
-  static Future fetchTemplateFromFile() async {
+  static Future fetchTemplateFromFile({source=ImageSource.gallery}) async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await picker.pickImage(source: source);
     return await image!.readAsBytes();
   }
 

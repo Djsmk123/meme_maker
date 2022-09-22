@@ -1,49 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-class TemplateData {
-  bool? success;
-  Data? data;
-
-  TemplateData({this.success, this.data});
-
-  TemplateData.fromJson(Map<String, dynamic> json) {
-    success = json['success'];
-    data = json['data'] != null ? Data.fromJson(json['data']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['success'] = success;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    return data;
-  }
-}
-
-class Data {
-  List<Memes>? memes;
-
-  Data({this.memes});
-
-  Data.fromJson(Map<String, dynamic> json) {
-    if (json['memes'] != null) {
-      memes = <Memes>[];
-      json['memes'].forEach((v) {
-        memes!.add(Memes.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (memes != null) {
-      data['memes'] = memes!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
 class Memes {
   String? id;
   String? name;
@@ -53,8 +8,8 @@ class Memes {
   Timestamp? timeStamp;
   String? uid;
   List<dynamic>? likes;
-
-  Memes({this.name, this.url, this.width, this.height, this.likes, this.id});
+  String? userName;
+  Memes({this.name, this.url, this.width, this.height, this.likes, this.id,this.uid,this.timeStamp,this.userName});
 
   Memes.fromJson(Map<String, dynamic> json) {
     name = json['name'];
@@ -67,6 +22,7 @@ class Memes {
         json.containsKey('timeStamp') ? json['timeStamp'] : Timestamp.now;
     uid =
         json.containsKey('uid') ? json['uid'] : "m74rafnFXddXD5iJt4VEJqEGPR03";
+    userName = json.containsKey('userName') ? json['userName'] : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -79,6 +35,7 @@ class Memes {
     data['uid'] = uid;
     data['likes'] = likes;
     data['id'] = id;
+    data['userName']=userName;
     return data;
   }
 }

@@ -4,6 +4,7 @@ import 'text_widget.dart';
 
 class DraggableText extends StatefulWidget {
   final int index;
+
   const DraggableText({Key? key, required this.index}) : super(key: key);
 
   @override
@@ -26,7 +27,7 @@ class _DraggableTextState extends State<DraggableText> {
             });
           },
           child: SizedBox(
-            height: 300,
+            height: 350,
             width: size.width,
             child: Padding(
               padding: const EdgeInsets.all(8.0),

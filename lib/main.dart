@@ -18,7 +18,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  Authentication.listenAuth();
+  await Authentication.listenAuth();
   runApp(const MyApp());
 }
 

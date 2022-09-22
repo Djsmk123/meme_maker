@@ -1,8 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:meme_maker/models/user_model.dart';
+import 'package:meme_maker/screens/edit_profile_screen.dart';
 import 'package:meme_maker/services/authencation_service.dart';
 
 import '../constant.dart';
@@ -17,6 +22,7 @@ class EndDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isLoggedIn = Authentication.user != null;
+    UserModel? userModel=Authentication.userModel;
     return Drawer(
       //backgroundColor: kPrimaryColor,
       elevation: 10,
@@ -24,10 +30,10 @@ class EndDrawer extends StatelessWidget {
       child: SafeArea(
         child: Column(
           children: [
-            const CircleAvatar(
+             CircleAvatar(
               maxRadius: 80,
               backgroundColor: kPrimaryColor,
-              backgroundImage: AssetImage("assets/images/default_img.png"),
+              backgroundImage:(userModel!=null && userModel.img!=null)?MemoryImage(base64Decode(userModel.img!)):const AssetImage("assets/images/default_img.png") as ImageProvider,
             ),
             const SizedBox(
               height: 10,
@@ -37,7 +43,7 @@ class EndDrawer extends StatelessWidget {
               children: [
                 Flexible(
                   child: Text(
-                    "Mobin@smkwinner",
+                    userModel!=null?userModel.name!:"Guest@ ${Random().nextInt(100515)}",
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 30,
@@ -72,6 +78,14 @@ class EndDrawer extends StatelessWidget {
                 onTap: () {
                   if (!isLoggedIn) {
                     Fluttertoast.showToast(msg: "Login required");
+                  }
+                  else{
+                    Navigator.pop(context);
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (builder) => const EditProfileScreen()));
                   }
                 }),
             drawerRowWidget(
