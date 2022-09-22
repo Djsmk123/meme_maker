@@ -18,56 +18,79 @@ class _SortingWidgetState extends State<SortingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    int index=Provider.of<TemplateProvider>(context).getSortingIndex;
-    user=Authentication.user;
+    int index = Provider.of<TemplateProvider>(context).getSortingIndex;
+    user = Authentication.user;
     return sortingRowWidget(index);
   }
 
-  sortingRowWidget(index){
-   bool isLoggedIn=user!=null;
+  sortingRowWidget(index) {
+    bool isLoggedIn = user != null;
     return Row(
       children: [
-        sortingWidgets(title: 'Popularity',isActive: index==0,index: 0,context: context, isLoggedIn: isLoggedIn),
-        sortingWidgets(title: 'Latest',isActive: index==1,index: 1,context: context, isLoggedIn: isLoggedIn),
-        if(isLoggedIn)
-        sortingWidgets(title: 'your templates',isActive: index==2,index: 2,context: context, isLoggedIn: isLoggedIn),
+        sortingWidgets(
+            title: 'Popularity',
+            isActive: index == 0,
+            index: 0,
+            context: context,
+            isLoggedIn: isLoggedIn),
+        sortingWidgets(
+            title: 'Latest',
+            isActive: index == 1,
+            index: 1,
+            context: context,
+            isLoggedIn: isLoggedIn),
+        if (isLoggedIn)
+          sortingWidgets(
+              title: 'your templates',
+              isActive: index == 2,
+              index: 2,
+              context: context,
+              isLoggedIn: isLoggedIn),
       ],
     );
   }
 
-  sortingWidgetOnTap(index,isLoggedIn) async {
-    Provider.of<TemplateProvider>(context,listen: false).setSortingIndex=index;
-     Provider.of<TemplateProvider>(context,listen: false).applyFilter(byTime: index==1?true:false,uid: isLoggedIn && index==2?user!.uid:null );
-
-
+  sortingWidgetOnTap(index, isLoggedIn) async {
+    Provider.of<TemplateProvider>(context, listen: false).setSortingIndex =
+        index;
+    Provider.of<TemplateProvider>(context, listen: false).applyFilter(
+        byTime: index == 1 ? true : false,
+        uid: isLoggedIn && index == 2 ? user!.uid : null);
   }
 
-  sortingWidgets({required String title,required bool isActive,required int index,required BuildContext context,required bool isLoggedIn}){
+  sortingWidgets(
+      {required String title,
+      required bool isActive,
+      required int index,
+      required BuildContext context,
+      required bool isLoggedIn}) {
     return Flexible(
       child: InkWell(
-        onTap:!isActive?(){
-          sortingWidgetOnTap(index,isLoggedIn);
-        }:null,
+        onTap: !isActive
+            ? () {
+                sortingWidgetOnTap(index, isLoggedIn);
+              }
+            : null,
         child: Container(
           alignment: Alignment.center,
           margin: const EdgeInsets.symmetric(horizontal: 10),
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-              color: isActive?kPrimaryColor:Colors.white,
-              border: !isActive?Border.all(color: kPrimaryColor):null,
-              borderRadius: BorderRadius.circular(16)
-          ),
+              color: isActive ? kPrimaryColor : Colors.white,
+              border: !isActive ? Border.all(color: kPrimaryColor) : null,
+              borderRadius: BorderRadius.circular(16)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               Flexible(
-                child: Text(title,
+                child: Text(
+                  title,
                   textAlign: TextAlign.center,
-                  style:TextStyle(
-                      color: isActive?Colors.white:kPrimaryColor,
-                      fontSize: 12
-                  ),),
+                  style: TextStyle(
+                      color: isActive ? Colors.white : kPrimaryColor,
+                      fontSize: 12),
+                ),
               ),
             ],
           ),

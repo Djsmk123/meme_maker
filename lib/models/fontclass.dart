@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class FontClass{
+class FontClass {
   String selectedFont = "Roboto";
-  TextStyle selectedFontTextStyle=const TextStyle();
+  TextStyle selectedFontTextStyle = const TextStyle();
   Color pickerColor = const Color(0xff443a49);
   Color currentColor = const Color(0xff443a49);
-  double fontSize=30;
+  double fontSize = 30;
   final List<String> myGoogleFonts = [
     "Abril Fatface",
     "Aclonica",

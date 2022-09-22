@@ -13,22 +13,23 @@ class TextWidget extends StatefulWidget {
 }
 
 class _TextWidgetState extends State<TextWidget> {
-  final FocusNode focusNode=FocusNode();
-  final FontClass fontClass=FontClass();
-  bool isFocused=false;
-  bool isVisible=true;
+  final FocusNode focusNode = FocusNode();
+  final FontClass fontClass = FontClass();
+  bool isFocused = false;
+  bool isVisible = true;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    if(mounted) {
+    if (mounted) {
       focusNode.addListener(() {
-      setState(() {
-        isFocused=focusNode.hasPrimaryFocus;
+        setState(() {
+          isFocused = focusNode.hasPrimaryFocus;
+        });
       });
-    });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Visibility(
@@ -39,33 +40,39 @@ class _TextWidgetState extends State<TextWidget> {
         children: [
           Visibility(
               visible: isFocused,
-              child:Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       setState(() {
                         fontClass.fontSize++;
                       });
                     },
                     child: const Icon(Icons.add),
                   ),
-                  const SizedBox(width: 10,),
+                  const SizedBox(
+                    width: 10,
+                  ),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       setState(() {
                         fontClass.fontSize--;
                       });
                     },
                     child: const Icon(Icons.remove),
                   ),
-                  const SizedBox(width: 10,),
+                  const SizedBox(
+                    width: 10,
+                  ),
                   GestureDetector(
-                    onTap:(){
-                      showDialog(context: context, builder: (builder){
-                        return AlertDialog(
-                            content: SingleChildScrollView(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (builder) {
+                            return AlertDialog(
+                                content: SingleChildScrollView(
                               child: SizedBox(
                                 width: double.maxFinite,
                                 child: FontPicker(
@@ -73,8 +80,10 @@ class _TextWidgetState extends State<TextWidget> {
                                     initialFontFamily: 'Anton',
                                     onFontChanged: (font) {
                                       setState(() {
-                                        fontClass.selectedFont = font.fontFamily;
-                                        fontClass.selectedFontTextStyle = font.toTextStyle();
+                                        fontClass.selectedFont =
+                                            font.fontFamily;
+                                        fontClass.selectedFontTextStyle =
+                                            font.toTextStyle();
                                       });
                                       debugPrint(
                                           "${font.fontFamily} with font weight ${font.fontWeight} and font style ${font.fontStyle}. FontSpec: ${font.toFontSpec()}");
@@ -82,15 +91,15 @@ class _TextWidgetState extends State<TextWidget> {
                                     googleFonts: fontClass.myGoogleFonts),
                               ),
                             ));
-                      });
+                          });
                     },
-
-
                     child: const Icon(Icons.font_download),
                   ),
-                  const SizedBox(width: 10,),
+                  const SizedBox(
+                    width: 10,
+                  ),
                   GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -98,19 +107,19 @@ class _TextWidgetState extends State<TextWidget> {
                               title: const Text('Pick a color!'),
                               content: SingleChildScrollView(
                                   child: BlockPicker(
-                                    pickerColor: fontClass.pickerColor,
-                                    onColorChanged: (changeColor){
-                                      setState(() {
-                                        fontClass.pickerColor=changeColor;
-                                      });
-                                    },
-                                  )
-                              ),
+                                pickerColor: fontClass.pickerColor,
+                                onColorChanged: (changeColor) {
+                                  setState(() {
+                                    fontClass.pickerColor = changeColor;
+                                  });
+                                },
+                              )),
                               actions: <Widget>[
                                 ElevatedButton(
                                   child: const Text('Change'),
                                   onPressed: () {
-                                    setState(() => fontClass.currentColor = fontClass.pickerColor);
+                                    setState(() => fontClass.currentColor =
+                                        fontClass.pickerColor);
                                     Navigator.of(context).pop();
                                   },
                                 ),
@@ -118,19 +127,20 @@ class _TextWidgetState extends State<TextWidget> {
                             );
                           },
                         );
-
                       },
                       child: const Icon(Icons.colorize)),
-                  const SizedBox(width: 10,),
+                  const SizedBox(
+                    width: 10,
+                  ),
                   GestureDetector(
-                      onTap: (){
-                       setState(() {
-                         isVisible=false;
-                       });
+                      onTap: () {
+                        setState(() {
+                          isVisible = false;
+                        });
                       },
                       child: const Icon(Icons.delete)),
                 ],
-              ) ),
+              )),
           SizedBox(
             height: 200,
             child: Row(
@@ -142,27 +152,25 @@ class _TextWidgetState extends State<TextWidget> {
                     expands: true,
                     maxLines: null,
                     autofocus: false,
-                    cursorWidth: isFocused?2:0,
+                    cursorWidth: isFocused ? 2 : 0,
                     autocorrect: true,
                     style: fontClass.selectedFontTextStyle.copyWith(
                         color: fontClass.currentColor,
-                        fontSize:fontClass.fontSize
-                    ),
-                    onTap: (){
+                        fontSize: fontClass.fontSize),
+                    onTap: () {
                       setState(() {
-                        isFocused=!isFocused;
-
+                        isFocused = !isFocused;
                       });
                     },
                     focusNode: focusNode,
                     decoration: InputDecoration(
                         hintText: "Text 1",
-                        hintStyle: fontClass.selectedFontTextStyle.
-                        copyWith(color: fontClass.currentColor, fontSize: fontClass.fontSize),
+                        hintStyle: fontClass.selectedFontTextStyle.copyWith(
+                            color: fontClass.currentColor,
+                            fontSize: fontClass.fontSize),
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
-                        border: InputBorder.none
-                    ),
+                        border: InputBorder.none),
                   ),
                 ),
               ],

@@ -19,7 +19,6 @@ class TemplateData {
     }
     return data;
   }
-
 }
 
 class Data {
@@ -55,19 +54,19 @@ class Memes {
   String? uid;
   List<dynamic>? likes;
 
-
-  Memes({this.name, this.url, this.width, this.height,this.likes,this.id});
+  Memes({this.name, this.url, this.width, this.height, this.likes, this.id});
 
   Memes.fromJson(Map<String, dynamic> json) {
     name = json['name'];
-    likes=json.containsKey('likes')?json['likes']:[];
+    likes = json.containsKey('likes') ? json['likes'] : [];
     url = json['url'];
     width = json['width'];
-    id=json['id'];
+    id = json['id'];
     height = json['height'];
-    timeStamp=json.containsKey('timeStamp')?json['timeStamp']:Timestamp.now;
-    uid=json.containsKey('uid')?json['uid']:"m74rafnFXddXD5iJt4VEJqEGPR03";
-
+    timeStamp =
+        json.containsKey('timeStamp') ? json['timeStamp'] : Timestamp.now;
+    uid =
+        json.containsKey('uid') ? json['uid'] : "m74rafnFXddXD5iJt4VEJqEGPR03";
   }
 
   Map<String, dynamic> toJson() {
@@ -76,15 +75,15 @@ class Memes {
     data['url'] = url;
     data['width'] = width;
     data['height'] = height;
-    data['timeStamp']=timeStamp;
-    data['uid']=uid;
-    data['likes']=likes;
-    data['id']=id;
+    data['timeStamp'] = timeStamp;
+    data['uid'] = uid;
+    data['likes'] = likes;
+    data['id'] = id;
     return data;
   }
 }
 
-class CustomTemplateModel{
+class CustomTemplateModel {
   final String title;
   final int value;
   const CustomTemplateModel(this.title, this.value);

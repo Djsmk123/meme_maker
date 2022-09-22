@@ -21,6 +21,7 @@ Future<void> main() async {
   Authentication.listenAuth();
   runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -29,24 +30,21 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TextProvider()),
-        ChangeNotifierProvider(create: (_)=>DragProvider()),
-        ChangeNotifierProvider(create: (_)=>TemplateProvider()),
-        ChangeNotifierProvider(create: (_)=>AuthProvider()),
-        ChangeNotifierProvider(create: (_)=>TextFieldErrorProvider()),
-
+        ChangeNotifierProvider(create: (_) => DragProvider()),
+        ChangeNotifierProvider(create: (_) => TemplateProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => TextFieldErrorProvider()),
       ],
-      builder: (context,widget){
-        User? user=Authentication.user;
-         return MaterialApp(
+      builder: (context, widget) {
+        User? user = Authentication.user;
+        return MaterialApp(
             theme: ThemeData(
-                useMaterial3: true,
-              scaffoldBackgroundColor: Colors.white
-            ),
+                useMaterial3: true, scaffoldBackgroundColor: Colors.white),
             debugShowCheckedModeBanner: false,
-            home:user!=null?const TemplateSelectorScreen():const LoginSignupScreen()
-        );
+            home: user != null
+                ? const TemplateSelectorScreen()
+                : const LoginSignupScreen());
       },
     );
   }
 }
-

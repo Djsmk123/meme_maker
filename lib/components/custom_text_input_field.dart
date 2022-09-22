@@ -1,4 +1,3 @@
-
 // ignore: must_be_immutable
 import 'dart:async';
 
@@ -15,14 +14,14 @@ class CustomTextInputContainer extends StatefulWidget {
   final bool isEnable;
   CustomTextInputContainer(
       {Key? key,
-        this.maxLines = 1,
-        this.isEnable=true,
-        required this.label,
-        required this.valid,
-        required this.valueChanged,
-        required this.keyboardTyp,
-        this.isPassword=false,
-        this.errorKey = ""})
+      this.maxLines = 1,
+      this.isEnable = true,
+      required this.label,
+      required this.valid,
+      required this.valueChanged,
+      required this.keyboardTyp,
+      this.isPassword = false,
+      this.errorKey = ""})
       : super(key: key);
   final String label;
   final FormFieldValidator<String> valid;
@@ -30,7 +29,7 @@ class CustomTextInputContainer extends StatefulWidget {
   final TextInputType keyboardTyp;
   int maxLines;
   bool isPassword;
-  
+
   @override
   State<CustomTextInputContainer> createState() =>
       _CustomTextInputContainerState();
@@ -39,7 +38,7 @@ class CustomTextInputContainer extends StatefulWidget {
 class _CustomTextInputContainerState extends State<CustomTextInputContainer> {
   var error = "";
   var periodicTimer = Timer.periodic(const Duration(seconds: 1), (timer) {});
-  bool isVisiblePassword=false;
+  bool isVisiblePassword = false;
 
   hideError() async {
     periodicTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
@@ -64,7 +63,8 @@ class _CustomTextInputContainerState extends State<CustomTextInputContainer> {
 
   @override
   Widget build(BuildContext context) {
-    error = Provider.of<TextFieldErrorProvider>(context).getFormError(widget.errorKey);
+    error = Provider.of<TextFieldErrorProvider>(context)
+        .getFormError(widget.errorKey);
     return Padding(
       padding: const EdgeInsets.only(top: 10, bottom: 0),
       child: Column(
@@ -76,7 +76,7 @@ class _CustomTextInputContainerState extends State<CustomTextInputContainer> {
             keyboardType: widget.keyboardTyp,
             maxLines: widget.maxLines,
             autocorrect: true,
-            obscureText: widget.isPassword?isVisiblePassword:false,
+            obscureText: widget.isPassword ? isVisiblePassword : false,
             decoration: InputDecoration(
                 hintText: widget.label,
                 hintStyle: const TextStyle(
@@ -84,33 +84,32 @@ class _CustomTextInputContainerState extends State<CustomTextInputContainer> {
                   fontSize: 14,
                 ),
                 contentPadding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 errorText: null,
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(color: Colors.black)
-                ),
-                enabledBorder:OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.black)),
+                enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(color: Colors.black)
-                ),
+                    borderSide: const BorderSide(color: Colors.black)),
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(color:Colors.blueAccent)
-                ),
-                focusedErrorBorder:OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                 borderSide: const BorderSide(color:Colors.blueGrey)
-                ),
-
-
+                    borderSide: const BorderSide(color: Colors.blueAccent)),
+                focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: const BorderSide(color: Colors.blueGrey)),
                 errorStyle: const TextStyle(fontSize: 0),
-                suffixIcon:widget.isPassword?IconButton(onPressed: (){
-                  setState((){
-                    isVisiblePassword=!isVisiblePassword;
-                  });
-                }, icon: Icon(isVisiblePassword?Icons.visibility_off:Icons.visibility)):null
-            ),
+                suffixIcon: widget.isPassword
+                    ? IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isVisiblePassword = !isVisiblePassword;
+                          });
+                        },
+                        icon: Icon(isVisiblePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility))
+                    : null),
           ),
           if (error != "")
             FadeAnimation(
@@ -136,4 +135,3 @@ class _CustomTextInputContainerState extends State<CustomTextInputContainer> {
     );
   }
 }
-

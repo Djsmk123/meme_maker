@@ -3,13 +3,13 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Authentication {
-
-  static Future signUp({required String email, required String password}) async {
+  static Future signUp(
+      {required String email, required String password}) async {
     final auth = FirebaseAuth.instance;
     var errorMessage = "";
     var user = await auth
         .createUserWithEmailAndPassword(email: email, password: password)
-        .then((user)  {
+        .then((user) {
       if (user.user != null) {
         return 0;
       }
@@ -43,9 +43,11 @@ class Authentication {
   static Future login({required String email, required String password}) async {
     final auth = FirebaseAuth.instance;
     String? errorMessage;
-    try{
-    await auth.signInWithEmailAndPassword(email: email, password: password).then((value) =>value.user);
-    }on FirebaseAuthException catch(error){
+    try {
+      await auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((value) => value.user);
+    } on FirebaseAuthException catch (error) {
       log('error$error');
 
       switch (error.code.toString().toLowerCase()) {
@@ -72,18 +74,16 @@ class Authentication {
       }
     }
 
-    if (errorMessage!=null) {
-
-        log("error$errorMessage");
+    if (errorMessage != null) {
+      log("error$errorMessage");
 
       throw Exception(errorMessage);
     }
     return null;
   }
 
-
- static Future resetPassword({required String email}) async {
-   final auth = FirebaseAuth.instance;
+  static Future resetPassword({required String email}) async {
+    final auth = FirebaseAuth.instance;
     var errorMessage = "";
     await auth.sendPasswordResetEmail(email: email).then((user) {
       return 0;
@@ -120,14 +120,13 @@ class Authentication {
       throw Exception("Something went wrong");
     });
   }
+
   static User? user;
-  static listenAuth(){
+  static listenAuth() {
     FirebaseAuth.instance.authStateChanges().listen((event) {
-      if(event!=null && !event.isAnonymous)
-      {
-        user=event;
+      if (event != null && !event.isAnonymous) {
+        user = event;
       }
     });
   }
-
 }
