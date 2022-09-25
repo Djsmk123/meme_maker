@@ -10,10 +10,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meme_maker/components/custom_drawer.dart';
 import 'package:meme_maker/constant.dart';
 import 'package:meme_maker/models/template_model.dart';
-import 'package:meme_maker/services/authencation_service.dart';
+import 'package:meme_maker/services/authentication_services.dart';
 import 'package:meme_maker/services/getTemplate.dart';
 import 'package:provider/provider.dart';
 
+import '../components/custom_app_bar.dart';
 import '../providers/template_provider.dart';
 
 class MemeUploadScreen extends StatefulWidget {
@@ -95,6 +96,7 @@ class _MemeUploadScreenState extends State<MemeUploadScreen> {
                                   Flexible(
                                       child: TextFormField(
                                     onFieldSubmitted: (value) async {
+
                                       url = value;
                                       imageFromNetwork;
                                     },
@@ -126,19 +128,30 @@ class _MemeUploadScreenState extends State<MemeUploadScreen> {
                                 ],
                               ),
                             ),
-                            const Divider(
-                              height: 20,
-                              thickness: 5,
+                             const Padding(
+                               padding: EdgeInsets.all(8.0),
+                               child: Divider(
+                                height: 20,
+                                thickness: 5,
                             ),
+                             ),
                             const Text(
                               "OR",
                               style:
                                   TextStyle(color: Colors.black, fontSize: 20),
                             ),
-                            const Divider(
-                              height: 20,
-                              thickness: 5,
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Divider(
+                                height: 20,
+                                thickness: 5,
+                              ),
                             ),
+                            if(bytes!=null)
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.memory(bytes!),
+                              ),
                             GestureDetector(
                               onTap: () async {
                                 setState(() {
@@ -193,6 +206,7 @@ class _MemeUploadScreenState extends State<MemeUploadScreen> {
                                       ),
                               ),
                             ),
+
                           ],
                         ),
                       )
@@ -253,6 +267,7 @@ class _MemeUploadScreenState extends State<MemeUploadScreen> {
                                         'name': nameTemplate!,
                                         'uid': Authentication.user!.uid,
                                         'timeStamp': Timestamp.now(),
+                                        'userName':Authentication.userModel!.name!
                                       });
                                       await FetchTemplate.uploadTemplate(
                                           templateId: templateId, tmp: meme);
@@ -319,26 +334,4 @@ class _MemeUploadScreenState extends State<MemeUploadScreen> {
       isLoading = false;
     });
   }
-}
- AppBar customAppBar(title){
-  return AppBar(
-    title: Text(
-      title,
-      style: TextStyle(
-        color: Colors.grey.shade800,
-        fontSize: 20,
-      ),
-    ),
-    actions: [
-      Builder(
-        builder: (context) => IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            Scaffold.of(context).openEndDrawer();
-          },
-        ),
-      )
-    ],
-    scrolledUnderElevation: 0,
-  );
 }

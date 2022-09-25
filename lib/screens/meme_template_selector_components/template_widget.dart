@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 import '../../constant.dart';
 import '../../models/template_model.dart';
-import '../../services/authencation_service.dart';
+import '../../services/authentication_services.dart';
 import '../../services/getTemplate.dart';
 
 class TemplateWidget extends StatefulWidget {
@@ -62,9 +62,9 @@ class _TemplateWidgetState extends State<TemplateWidget> {
 
                             children:[
                               if(item.userName!=null)
-                              const TextSpan(
-                                text: ",\tupload by SmkWinner",
-                                style: TextStyle(
+                               TextSpan(
+                                text: ",\nby ${item.userName!}",
+                                style:const TextStyle(
                                   color: Colors.grey,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600
@@ -86,7 +86,7 @@ class _TemplateWidgetState extends State<TemplateWidget> {
                               style: const TextStyle(fontSize: 12),
                             ),
                             const SizedBox(width: 10,),
-                          SizedBox(
+                           SizedBox(
                             width: 50,
                             child: ListTile(
                               onTap: () async {

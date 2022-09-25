@@ -5,8 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meme_maker/models/user_model.dart';
 
 class Authentication {
-  static Future signUp(
-      {required String email, required String password}) async {
+  static Future signUp({required String email, required String password}) async {
     final auth = FirebaseAuth.instance;
     var errorMessage = "";
     var user = await auth

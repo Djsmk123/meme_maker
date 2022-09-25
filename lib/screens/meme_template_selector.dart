@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:meme_maker/models/add_helper.dart';
 import 'package:meme_maker/models/template_model.dart';
 import 'package:meme_maker/providers/template_provider.dart';
 import 'package:meme_maker/screens/meme_maker_screen.dart';
@@ -11,7 +14,8 @@ import 'package:provider/provider.dart';
 
 import '../components/custom_drawer.dart';
 import '../constant.dart';
-import '../services/authencation_service.dart';
+
+import '../services/authentication_services.dart';
 import '../services/getTemplate.dart';
 import 'meme_template_selector_components/sorting_meme_template_widget.dart';
 import 'meme_template_selector_components/template_widget.dart';
@@ -29,7 +33,26 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
     const CustomTemplateModel("from file", 0),
     const CustomTemplateModel("from url", 1),
   ];
+  late BannerAd _bannerAd;
+  bool isBannerAdLoaded=false;
 
+  void _createBottomBannerAd(){
+    _bannerAd=BannerAd(adUnitId: AdHelper.bannerAdUnitId, size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+          onAdLoaded: (_){
+        setState(() {
+          isBannerAdLoaded=true;
+        });
+      },
+        onAdFailedToLoad: (ad,error){
+            log(error.toString());
+            ad.dispose();
+        }
+      )
+    );
+    _bannerAd.load();
+  }
   User? user = Authentication.user;
   @override
   void initState() {
@@ -39,6 +62,7 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
     Provider.of<TemplateProvider>(context, listen: false).isLoading = true;
     Provider.of<TemplateProvider>(context, listen: false).result.clear();
     initAsync();
+    _createBottomBannerAd();
   }
 
   initAsync() async {
@@ -51,10 +75,17 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _bannerAd.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
     bool isLoading = Provider.of<TemplateProvider>(context).loadingStatus;
     List<Memes>? memes = Provider.of<TemplateProvider>(context).getTemplateData;
     bool isSearched = Provider.of<TemplateProvider>(context).getSearchStatus;
+
     return Scaffold(
       floatingActionButton: !isLoading
           ? PopupMenuButton(
@@ -186,6 +217,15 @@ class _TemplateSelectorScreenState extends State<TemplateSelectorScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    if(isBannerAdLoaded)
+                    SizedBox(
+                      height: _bannerAd.size.height.toDouble(),
+                      width: _bannerAd.size.width.toDouble(),
+                      child: AdWidget(
+                        ad:_bannerAd,
+                      ),
+
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 0),

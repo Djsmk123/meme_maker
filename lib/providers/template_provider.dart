@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meme_maker/models/template_model.dart';
-import 'package:meme_maker/services/authencation_service.dart';
+import 'package:meme_maker/services/authentication_services.dart';
 
 import '../services/getTemplate.dart';
 

@@ -50,6 +50,7 @@ android {
         minSdkVersion 19
         multiDexEnabled true
         targetSdkVersion flutter.targetSdkVersion
+
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -69,4 +70,6 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.google.android.gms:play-services-ads:21.2.0'
+
 }

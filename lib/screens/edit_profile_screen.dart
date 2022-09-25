@@ -4,14 +4,14 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meme_maker/constant.dart';
 import 'package:meme_maker/models/user_model.dart';
-import 'package:meme_maker/screens/meme_upload_screen.dart';
-import 'package:meme_maker/services/authencation_service.dart';
+import 'package:meme_maker/services/authentication_services.dart';
 import 'package:meme_maker/services/getTemplate.dart';
+
+import '../components/custom_app_bar.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({Key? key}) : super(key: key);
@@ -154,9 +154,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           'name':name,
                           'img':bytes,
                         }));
-                        Fluttertoast.showToast(msg: "Updated");
+                        showToast(msg:"Updated");
                       }catch(e){
-                        Fluttertoast.showToast(msg: "Something went wrong");
+                        showToast();
                         log(e.toString());
                       }
                       isLoading=false;

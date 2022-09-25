@@ -9,7 +9,7 @@ import 'package:meme_maker/constant.dart';
 import 'package:meme_maker/models/user_model.dart';
 import 'package:meme_maker/providers/login_signup_provider.dart';
 import 'package:meme_maker/screens/meme_template_selector.dart';
-import 'package:meme_maker/services/authencation_service.dart';
+import 'package:meme_maker/services/authentication_services.dart';
 import 'package:provider/provider.dart';
 
 import '../components/custom_text_input_field.dart';
@@ -267,26 +267,21 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                           Provider.of<AuthProvider>(context, listen: false)
                               .setLoading = false;
                         },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
+                        child:const Align(
                           alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: kPrimaryColor,
-                              borderRadius: BorderRadius.circular(16)),
-                          child: !isLoading
-                              ? const Text(
-                                  "Skip",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                )
-                              : const CircularProgressIndicator(
-                                  color: Colors.white,
-                                ),
+                          child:  Padding(
+                            padding:  EdgeInsets.all(8.0),
+                            child: Text(
+                                      "Skip",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                          color: Colors.blueAccent),
+                                    ),
+                          ),
+                        )
+
                         ),
-                      )
+
                   ],
                 ),
               ),

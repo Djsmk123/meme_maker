@@ -1,5 +1,7 @@
 // ignore_for_file: file_names
 
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -22,7 +24,7 @@ class FetchTemplate {
     }
   }
 
-  static Future fetchTemplateFromFile({source=ImageSource.gallery}) async {
+  static Future<Uint8List> fetchTemplateFromFile({source=ImageSource.gallery}) async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: source);
     return await image!.readAsBytes();
@@ -49,8 +51,7 @@ class FetchTemplate {
     await collection.doc(templateId).delete();
   }
 
-  static Future uploadTemplate(
-      {required int templateId, required Memes tmp}) async {
+  static Future uploadTemplate({required int templateId, required Memes tmp}) async {
     await collection.doc(templateId.toString()).set(tmp.toJson());
   }
 }

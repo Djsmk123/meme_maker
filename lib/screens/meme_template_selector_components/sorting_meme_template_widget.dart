@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../constant.dart';
 import '../../providers/template_provider.dart';
-import '../../services/authencation_service.dart';
+import '../../services/authentication_services.dart';
 
 class SortingWidget extends StatefulWidget {
   const SortingWidget({Key? key}) : super(key: key);
@@ -48,7 +48,7 @@ class _SortingWidgetState extends State<SortingWidget> {
               isLoggedIn: isLoggedIn),
         if(isLoggedIn)
           sortingWidgets(
-              title: 'Favourite',
+              title: 'Favourites',
               isActive: index == 3,
               index: 3,
               context: context,

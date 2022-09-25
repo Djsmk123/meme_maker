@@ -14,19 +14,15 @@ class FadeAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tween = TimelineTween<AniProps>()
-      ..addScene(
+    final tween = TimelineTween<AniProps>()..addScene(
               begin: const Duration(milliseconds: 0),
               duration: const Duration(milliseconds: 500))
-          .animate(AniProps.opacity, tween: Tween(begin: 0.0, end: 1.0))
-      ..addScene(
+             .animate(AniProps.opacity, tween: Tween(begin: 0.0, end: 1.0))
+             ..addScene(
               begin: const Duration(milliseconds: 0),
               duration: const Duration(milliseconds: 500),
               curve: Curves.easeOut)
           .animate(AniProps.translateY, tween: Tween(begin: -30.0, end: 0.0));
-
-    // ..add(AniProps.opacity, IntTween(begin: 0,end: 1), Duration(milliseconds: 500))
-    // ..add(AniProps.translateY, IntTween(begin: -30,end: 0),Duration(milliseconds: 500),Curves.easeOut);
 
     return PlayAnimation<TimelineValue<AniProps>>(
       delay: Duration(milliseconds: (500 * delay).round()),

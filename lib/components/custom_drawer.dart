@@ -4,15 +4,14 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:meme_maker/models/user_model.dart';
 import 'package:meme_maker/screens/edit_profile_screen.dart';
-import 'package:meme_maker/services/authencation_service.dart';
 
 import '../constant.dart';
 import '../screens/login_signup_screen.dart';
 import '../screens/meme_upload_screen.dart';
+import '../services/authentication_services.dart';
 
 class EndDrawer extends StatelessWidget {
   const EndDrawer({
@@ -77,7 +76,7 @@ class EndDrawer extends StatelessWidget {
                 icon: Icons.person,
                 onTap: () {
                   if (!isLoggedIn) {
-                    Fluttertoast.showToast(msg: "Login required");
+                    showToast(msg:"Login required");
                   }
                   else{
                     Navigator.pop(context);
@@ -93,7 +92,7 @@ class EndDrawer extends StatelessWidget {
                 icon: Icons.upload,
                 onTap: () {
                   if (!isLoggedIn) {
-                    Fluttertoast.showToast(msg: "Login required");
+                    showToast(msg:"Login required");
                   } else {
                     Navigator.pop(context);
                     Navigator.popUntil(context, (route) => route.isFirst);

@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.smkwinner.meme_maker.meme_maker">
    <application
         android:label="meme_maker"
@@ -31,6 +32,11 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-    </application>
-    <uses-permission android:name="android.permission.INTERNET"/>
+   <meta-data
+       android:name="com.google.android.gms.ads.APPLICATION_ID"
+       android:value="ca-app-pub-2176311180103137~2117658880"
+       />
+   </application>
+    <uses-permission android:name="android.permission.INTERNET"
+        tools:ignore="ManifestOrder" />
 </manifest>
