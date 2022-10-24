@@ -6,11 +6,12 @@ MemeGen.JPG is an flutter application where user can add captions,image to meme 
 
 - Login/Signup
 - Edit Profile
-- Can use template from local file or internet.
-- Can also upload template to server from file or internet.
-- User can add like to meme templates or delete own meme template.
-- Can search meme template from the list.
+- Can use a template from a local file or the internet.
+- Can also upload a template to the server from a file or the internet.
+- Users can add like to meme templates or delete their own meme template.
+- Can search meme templates from the list.
 - Save meme in the gallery
+
 
 # How to setup
 
