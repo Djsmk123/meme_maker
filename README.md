@@ -1,16 +1,55 @@
-# meme_maker
+# MemeGen.JPG
 
-A new Flutter project.
+MemeGen.JPG is an flutter application where user can add captions,image to meme template for generating meme.
 
-## Getting Started
+# Features 
 
-This project is a starting point for a Flutter application.
+- Login/Signup
+- Edit Profile
+- Can use template from local file or internet.
+- Can also upload template to server from file or internet.
+- User can add like to meme templates or delete own meme template.
+- Can search meme template from the list.
+- Save meme in the gallery
 
-A few resources to get you started if this is your first Flutter project:
+# How to setup
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Fork and clone this repo.
+- Create new firebase app and add files that are required for setup.
+- For testing purpose you can still use my AdMob id.
+- ```
+  Flutter build apk --release //for release
+  Flutter run -d <device_id>
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+  ```
+  
+# Lets Understand how Firestore Database Setup
+
+![database structure](./firestore_view.jpg)
+
+# Demo
+![demo](./demo.gif)
+
+
+# Latest release
+
+[https://github.com/Djsmk123/meme_maker/releases](https://github.com/Djsmk123/meme_maker/releases)
+
+
+
+# Upcoming Features
+[ ] Multiple meme template selector 
+
+[ ] Videos/Gifs templates
+
+[ ] Sticker for whatsapp
+
+[ ] User profile enhancements
+
+[ ]  ..... Many More
+
+
+##### ***NOTE :*** You can request me on the Twitter @smk_winner to deleting your data.
+
+
+
