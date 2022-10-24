@@ -45,187 +45,187 @@ class _TemplateWidgetState extends State<TemplateWidget> {
                   height: 10,
                 ),
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Flexible(
-                          flex: 1,
-                          child: RichText(
-                              maxLines: 2,
-                              text: TextSpan(
-                              text: item.name!.toUpperCase(),style:const TextStyle(
-                              color: Colors.black,
-                              fontSize: 20
-                          ),
-
-                            children:[
-                              if(item.userName!=null)
-                               TextSpan(
-                                text: ",\nby ${item.userName!}",
-                                style:const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600
-                                )
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                  item.name!.toUpperCase(),style:const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14
                               ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              if(item.userName!=null)
+                                Text(
+                                    "by ${item.userName!}",
+                                    style:const TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600
+                                    )
+                                ),
 
-                            ]
-                          )),
+                            ],
+                          ),
                         ),
 
                         Flexible(
+                          flex: 0,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '${time}ago',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                            const SizedBox(width: 10,),
-                           SizedBox(
-                            width: 50,
-                            child: ListTile(
-                              onTap: () async {
-                                if (user != null) {
-                                  if (!isLiked) {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    try {
-                                      await FetchTemplate.likeTemplate(
-                                          item.id!, user.uid);
-                                      likes.add(user.uid);
-                                      isLiked = true;
-                                    } catch (e) {
-                                      log(e.toString());
-                                      Fluttertoast.showToast(
-                                          msg: "Something went wrong");
-                                    }
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    try {
-                                      await FetchTemplate.removeTemplateLike(
-                                          item.id!, user.uid);
-                                      likes.remove(user.uid);
-                                      isLiked = false;
-                                    } catch (e) {
-                                      log(e.toString());
-                                      Fluttertoast.showToast(
-                                          msg: "Something went wrong");
-                                    }
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                  }
-                                } else {
-                                  Fluttertoast.showToast(
-                                      msg: "Sign in required");
-                                }
-                              },
-                              title: Text(likes.length.toString()),
-                              contentPadding: EdgeInsets.zero,
-                              horizontalTitleGap: 0,
-                              leading: Icon(
-                                !isLiked
-                                    ? Icons.favorite_border
-                                    : Icons.favorite,
-                                color: isLiked ? Colors.red : Colors.black,
+                            children: [
+                              Text(
+                                '${time}ago',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontSize: 12),
                               ),
-                            ),
-                          ),
-                          if (user != null && user.uid == item.uid)
-                          const SizedBox(width: 10,),
-                            if (user != null && user.uid == item.uid)
-                          GestureDetector(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      title: const Text(
-                                        "Do you want to delete this template?",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 24),
-                                      ),
-                                      content: Image.memory(
-                                        image,
-                                      ),
-                                      actionsAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                      actions: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text(
-                                            "No",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 24),
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () async {
-                                            Navigator.pop(context);
-                                            try {
-                                              Provider.of<TemplateProvider>(
-                                                  context,
-                                                  listen: false)
-                                                  .setLoading();
-                                              await FetchTemplate
-                                                  .deleteTemplate(
-                                                  templateId: item.id!);
-                                              Provider.of<TemplateProvider>(
-                                                  context,
-                                                  listen: false)
-                                                  .setTemplateData();
-                                              setState(() {
-                                                Provider.of<TemplateProvider>(
-                                                    context,
-                                                    listen: false)
-                                                    .setTemplateData();
-                                              });
-                                              Provider.of<TemplateProvider>(
-                                                  context,
-                                                  listen: false)
-                                                  .setLoading();
-                                            } catch (e) {
-                                              if (kDebugMode) {
-                                                print(e.toString());
-                                              }
-                                              getFlutterToast;
-                                            }
-                                          },
-                                          child: const Text(
-                                            "Yes",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 24),
-                                          ),
-                                        )
-                                      ],
-                                    );
-                                  });
-                            },
-                            child: const Icon(
-                              Icons.delete,
-                            ),
-                          ),
-                          ],
+                              const SizedBox(width: 10,),
+                              SizedBox(
+                                width: 50,
+                                child: ListTile(
+                                  onTap: () async {
+                                    if (user != null) {
+                                      if (!isLiked) {
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                        try {
+                                          await FetchTemplate.likeTemplate(
+                                              item.id!, user.uid);
+                                          likes.add(user.uid);
+                                          isLiked = true;
+                                        } catch (e) {
+                                          log(e.toString());
+                                          Fluttertoast.showToast(
+                                              msg: "Something went wrong");
+                                        }
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                        try {
+                                          await FetchTemplate.removeTemplateLike(
+                                              item.id!, user.uid);
+                                          likes.remove(user.uid);
+                                          isLiked = false;
+                                        } catch (e) {
+                                          log(e.toString());
+                                          Fluttertoast.showToast(
+                                              msg: "Something went wrong");
+                                        }
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                      }
+                                    } else {
+                                      Fluttertoast.showToast(
+                                          msg: "Sign in required");
+                                    }
+                                  },
+                                  title: Text(likes.length.toString()),
+                                  contentPadding: EdgeInsets.zero,
+                                  horizontalTitleGap: 0,
+                                  leading: Icon(
+                                    !isLiked
+                                        ? Icons.favorite_border
+                                        : Icons.favorite,
+                                    color: isLiked ? Colors.red : Colors.black,
+                                  ),
+                                ),
+                              ),
+                              if (user != null && user.uid == item.uid)
+                                const SizedBox(width: 10,),
+                              if (user != null && user.uid == item.uid)
+                                GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: const Text(
+                                              "Do you want to delete this template?",
+                                              style: TextStyle(
+                                                  color: Colors.black, fontSize: 24),
+                                            ),
+                                            content: Image.memory(
+                                              image,
+                                            ),
+                                            actionsAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            actions: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text(
+                                                  "No",
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 24),
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  Navigator.pop(context);
+                                                  try {
+                                                    Provider.of<TemplateProvider>(
+                                                        context,
+                                                        listen: false)
+                                                        .setLoading();
+                                                    await FetchTemplate
+                                                        .deleteTemplate(
+                                                        templateId: item.id!);
+                                                    Provider.of<TemplateProvider>(
+                                                        context,
+                                                        listen: false)
+                                                        .setTemplateData();
+                                                    setState(() {
+                                                      Provider.of<TemplateProvider>(
+                                                          context,
+                                                          listen: false)
+                                                          .setTemplateData();
+                                                    });
+                                                    Provider.of<TemplateProvider>(
+                                                        context,
+                                                        listen: false)
+                                                        .setLoading();
+                                                  } catch (e) {
+                                                    if (kDebugMode) {
+                                                      print(e.toString());
+                                                    }
+                                                    getFlutterToast;
+                                                  }
+                                                },
+                                                child: const Text(
+                                                  "Yes",
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 24),
+                                                ),
+                                              )
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  child: const Icon(
+                                    Icons.delete,
+                                  ),
+                                ),
+                            ],
                           ),
                         )
                       ],
                     ),
-
 
                   ],
                 )

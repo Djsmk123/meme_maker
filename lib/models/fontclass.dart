@@ -1,14 +1,12 @@
+
 import 'package:flutter/material.dart';
 
 class FontClass {
-  String selectedFont = "Roboto";
-  TextStyle selectedFontTextStyle = const TextStyle(
-    color: Colors.white
-  );
-  Color pickerColor = const Color(0xff443a49);
-  Color currentColor = Colors.white;
-  double fontSize = 30;
-  final List<Color> defaultColors = const [
+  static String selectedFont = "Roboto";
+  static Color pickerColor = const Color(0xff443a49);
+  static  Color currentColor = Colors.white;
+  static double fontSize = 30;
+  static List<Color> defaultColors = const [
     Colors.red,
     Colors.pink,
     Colors.purple,

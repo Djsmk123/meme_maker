@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
-import 'package:meme_maker/models/fontclass.dart';
+
+import 'package:meme_maker/models/FontClass.dart';
 
 class TextWidget extends StatefulWidget {
   const TextWidget({Key? key}) : super(key: key);
@@ -12,7 +13,6 @@ class TextWidget extends StatefulWidget {
 
 class _TextWidgetState extends State<TextWidget> {
   final FocusNode focusNode = FocusNode();
-  final FontClass fontClass = FontClass();
   bool isFocused = false;
   bool isVisible = true;
 
@@ -61,9 +61,9 @@ class _TextWidgetState extends State<TextWidget> {
                         cursorWidth: isFocused ? 2 : 0,
                         autocorrect: true,
 
-                        style: fontClass.selectedFontTextStyle.copyWith(
-                            color: fontClass.currentColor,
-                            fontSize: fontClass.fontSize),
+                        style: TextStyle(
+                            color: FontClass.currentColor,
+                            fontSize: FontClass.fontSize),
                         onTap: () {
                           setState(() {
                             isFocused = !isFocused;
@@ -72,9 +72,9 @@ class _TextWidgetState extends State<TextWidget> {
                         focusNode: focusNode,
                         decoration: InputDecoration(
                             hintText: "Text 1",
-                            hintStyle: fontClass.selectedFontTextStyle.copyWith(
-                                color: fontClass.currentColor,
-                                fontSize: fontClass.fontSize),
+                            hintStyle: TextStyle(
+                                color: FontClass.currentColor,
+                                fontSize: FontClass.fontSize),
                             enabledBorder: InputBorder.none,
                             focusedBorder: InputBorder.none,
                             border: InputBorder.none),
@@ -108,11 +108,11 @@ class _TextWidgetState extends State<TextWidget> {
                                     title: const Text('Pick a color!'),
                                     content: SingleChildScrollView(
                                         child: BlockPicker(
-                                          pickerColor: fontClass.pickerColor,
-                                            availableColors:fontClass.defaultColors,
+                                          pickerColor: FontClass.pickerColor,
+                                            availableColors:FontClass.defaultColors,
                                           onColorChanged: (changeColor) {
                                             setState(() {
-                                              fontClass.pickerColor = changeColor;
+                                              FontClass.pickerColor = changeColor;
                                             });
                                           },
                                         )),
@@ -120,8 +120,8 @@ class _TextWidgetState extends State<TextWidget> {
                                       ElevatedButton(
                                         child: const Text('Change'),
                                         onPressed: () {
-                                          setState(() => fontClass.currentColor =
-                                              fontClass.pickerColor);
+                                          setState(() => FontClass.currentColor =
+                                              FontClass.pickerColor);
                                           Navigator.of(context).pop();
                                         },
                                       ),

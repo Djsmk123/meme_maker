@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.smkwinner.meme_maker.meme_maker">
    <application
-        android:label="meme_maker"
+        android:label="MemeGen.jpg"
         android:name="${applicationName}"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">

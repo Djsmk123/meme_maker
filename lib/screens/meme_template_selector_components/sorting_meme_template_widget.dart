@@ -41,14 +41,14 @@ class _SortingWidgetState extends State<SortingWidget> {
             isLoggedIn: isLoggedIn),
         if (isLoggedIn)
           sortingWidgets(
-              title: 'yours',
+              title: 'Uploaded',
               isActive: index == 2,
               index: 2,
               context: context,
               isLoggedIn: isLoggedIn),
         if(isLoggedIn)
           sortingWidgets(
-              title: 'Favourites',
+              title: 'Liked',
               isActive: index == 3,
               index: 3,
               context: context,

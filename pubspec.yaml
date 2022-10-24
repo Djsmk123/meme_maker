@@ -42,7 +42,7 @@ dependencies:
   image_picker: ^0.8.5+3
   share_plus: ^4.4.0
   google_mobile_ads: ^2.0.1
-
+  palette_generator: ^0.3.3+2
   cloud_firestore: ^3.4.9
   firebase_auth: ^3.8.0
   google_fonts: ^3.0.1

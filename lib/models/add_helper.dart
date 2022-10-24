@@ -5,7 +5,7 @@ class AdHelper{
     if(Platform.isAndroid)
       {
          return "ca-app-pub-2176311180103137/5865332202";
-        return const String.fromEnvironment("AndroidAddId");
+        //return const String.fromEnvironment("AndroidAddId");
       }
     else if(Platform.isIOS){
       return const String.fromEnvironment("iOSAddId");
